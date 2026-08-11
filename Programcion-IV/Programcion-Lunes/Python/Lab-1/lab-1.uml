@@ -1,0 +1,56 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Conexion {
+    - DATABASE: String
+    - USERNAME: String
+    - PASSWORD: String
+    - DB_PORT: String
+    - HOST: String
+    - MIN_CON: int
+    - MAX_CON: int
+    - pool: Pool
+    {static} + obtenerPool(cls): Pool
+    {static} + obtenerConexion(cls): Connection
+    {static} + liberarConexion(cls, conexion)
+    {static} + cerrarConexiones(cls)
+}
+
+class CursorDelPool {
+    - conn: String
+    - cursor: String
+    + __init__(self)
+    + __enter__(self)
+    + __exit__(self)
+}
+
+class Usuario {
+    - id_usuario: int
+    - username: String
+    - password: String
+    + __str__(): String
+    + metodo Get/Set de cada atributo
+}
+
+class UsuarioDao {
+    {static} - SELECCIONAR: String
+    {static} - INSERTAR: String
+    {static} - ACTUALIZAR: String
+    {static} - ELIMINAR: String
+    {static} + seleccionar(cls): List<Usuario>
+    {static} + insertar(cls, usuario)
+    {static} + actualizar(cls, usuario)
+    {static} + eliminar(cls, usuario)
+}
+
+class MenuAppUsuario {
+    - Responsabilidades: Contiene un menú con 5 opciones
+}
+
+class logger_base {
+    + logger: logging
+}
+
+Conexion o-- CursorDelPool : utiliza
+UsuarioDao ..> Usuario : usa
+@enduml
