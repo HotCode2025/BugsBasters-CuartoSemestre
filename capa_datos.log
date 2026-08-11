@@ -1,0 +1,52 @@
+04:45:16 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:45:16 PM: DEBUG [Conexion.py:32] Pool creado con éxito: <psycopg2.pool.SimpleConnectionPool object at 0x000001B6DC98BE60>
+04:45:16 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:45:16 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:45:16 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:45:42 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:45:42 PM: DEBUG [UsuarioDao.py:31] Usuario insertado: Usuario [ID: None, Username: brian, Password: 12345]
+04:45:42 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:45:42 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:45:42 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:45:44 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:45:44 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:45:44 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:45:44 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:46:01 PM: WARNING [MenuAppUsuario.py:45] Entrada inválida en el menú: invalid literal for int() with base 10: 'brianSastre'
+04:46:05 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:46:05 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:46:05 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:46:05 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:46:15 PM: WARNING [MenuAppUsuario.py:45] Entrada inválida en el menú: invalid literal for int() with base 10: 'brian'
+04:46:24 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:46:24 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:46:24 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:46:24 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:46:34 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:46:34 PM: DEBUG [UsuarioDao.py:31] Usuario insertado: Usuario [ID: None, Username: brian2, Password: 1234567]
+04:46:34 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:46:34 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:46:34 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:46:36 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:46:36 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:46:36 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:46:36 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:46:50 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:46:50 PM: DEBUG [UsuarioDao.py:43] Usuario actualizado: Usuario [ID: 1, Username: Sastre, Password: 123456789]
+04:46:50 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:46:50 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:46:50 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:46:59 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:46:59 PM: DEBUG [UsuarioDao.py:55] Usuario eliminado: Usuario [ID: 1, Username: None, Password: None]
+04:46:59 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:46:59 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:46:59 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:47:04 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:47:04 PM: DEBUG [UsuarioDao.py:55] Usuario eliminado: Usuario [ID: 2, Username: None, Password: None]
+04:47:04 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:47:04 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:47:04 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
+04:47:07 PM: DEBUG [CursorDelPool.py:10] Inicio del método __enter__ y obtención de cursor
+04:47:07 PM: DEBUG [CursorDelPool.py:19] Se ejecuta el método __exit__
+04:47:07 PM: DEBUG [CursorDelPool.py:25] Transacción confirmada (commit)
+04:47:07 PM: DEBUG [Conexion.py:51] Conexión liberada correctamente: <connection object at 0x000001B6DE70DCF0; dsn: 'user=postgres password=xxx dbname=Lab_Python_clase-1 host=127.0.0.1 port=5432', closed: 0>
