@@ -1,5 +1,5 @@
 const shopContent = document.getElementById("shopContent");
-productos.forEach((product) => {
+products.forEach((product) => {
     const content = document.createElement("div");
     content.innerHTML = `
     <img src ="${product.image}" class="img">
