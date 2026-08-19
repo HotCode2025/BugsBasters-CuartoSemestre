@@ -17,3 +17,9 @@ env/
 # Sistema
 .DS_Store
 Thumbs.db
+# Java / Maven
+target/
+*.class
+
+# Node
+node_modules/
