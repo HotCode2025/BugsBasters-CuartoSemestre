@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>LA LEYENDA DE AANG: AVATAR</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+    <!-- TÍTULO -->
+    <h1>AVATAR</h1>
+
+
+    <!-- INICIO -->
+    <section id="inicio">
+
+        <button id="boton-jugar">
+            Jugar
+        </button>
+
+        <button id="boton-reglas">
+            Reglas del Juego
+        </button>
+
+    </section>
+
+
+    <!-- REGLAS DEL JUEGO -->
+    <section id="reglas-del-juego">
+
+        <h4>Reglas del Juego</h4>
+
+        <ol>
+
+            <li>
+                <strong>Selección de Personaje</strong>
+
+                <ul>
+                    <li>
+                        El jugador elige uno de los cuatros personajes:
+                        Zuko, Katara, Aang o Toph
+                    </li>
+
+                    <li>
+                        El enemigo es asignado aleatoriamente
+                        de entre estos personajes
+                    </li>
+                </ul>
+            </li>
+
+
+            <li>
+                <strong>Ataques</strong>
+
+                <ul>
+                    <li>
+                        El jugador elige entre tres ataques:
+                        Puño, Patada y Barrida
+                    </li>
+
+                    <li>
+                        El enemigo elige aleatoriamente
+                        entre estos tres ataques
+                    </li>
+                </ul>
+            </li>
+
+
+            <li>
+                <strong>Reglas del Combate</strong>
+
+                <ul>
+                    <li>
+                        <strong>Empate:</strong>
+                        Si ambos eligen el mismo ataque Empatan
+                    </li>
+
+                    <li>
+                        <strong>Victoria del Jugador:</strong>
+
+                        <ul>
+                            <li>
+                                Puño ✊ vence a Barrida 🦶
+                            </li>
+
+                            <li>
+                                Patada 🦵 vence a Puño ✊
+                            </li>
+
+                            <li>
+                                Barrida 🦶 vence a Patada 🦵
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+
+            <li>
+                <strong>Derrota del Jugador:</strong>
+
+                Cualquier otra combinación de ataques que no sea
+                empate o victoria del jugador, será derrota del jugador.
+            </li>
+
+
+            <li>
+                <strong>Vidas:</strong>
+
+                Cada jugador inicia con 3 vidas, cada derrota le quita
+                una vida. El juego termina cuando un jugador pierde
+                las 3 vidas.
+            </li>
+
+
+            <li>
+                <strong>Fin del Juego:</strong>
+
+                El juego termina cuando un jugador pierde las 3 vidas.
+            </li>
+
+
+            <li>
+                <strong>Reiniciar:</strong>
+
+                Al finalizar el juego, el jugador puede reiniciar
+                el juego y volver a elegir un personaje.
+            </li>
+
+        </ol>
+
+
+        <button id="boton-volver">
+            Volver
+        </button>
+
+    </section>
+
+
+    <!-- SELECCIÓN DE PERSONAJE -->
+    <section id="seleccionar-personaje">
+
+        <h2>Elige tu Personaje</h2>
+
+        <input type="radio" name="personaje" id="zuko">
+        <label for="zuko">Zuko</label>
+
+        <input type="radio" name="personaje" id="katara">
+        <label for="katara">Katara</label>
+
+        <input type="radio" name="personaje" id="aang">
+        <label for="aang">Aang</label>
+
+        <input type="radio" name="personaje" id="toph">
+        <label for="toph">Toph</label>
+
+
+        <button id="boton-personaje">
+            Seleccionar
+        </button>
+
+    </section>
+
+
+    <!-- SELECCIÓN DE ATAQUE -->
+    <section id="seleccionar-ataque">
+
+        <h2>Elige tu ataque</h2>
+
+
+        <p>
+            Tu personaje
+            <span id="personaje-jugador"></span>
+            tiene
+            <span id="vidas-jugador">3</span>
+            vidas
+        </p>
+
+
+        <p>
+            El personaje
+            <span id="personaje-enemigo"></span>
+            del enemigo tiene
+            <span id="vidas-enemigo">3</span>
+            vidas
+        </p>
+
+        <!-- ATAQUES -->
+        <p>
+
+            <button id="boton-punio">
+                Puño ✊
+            </button>
+
+            <button id="boton-patada">
+                Patada 🦵
+            </button>
+
+            <button id="boton-barrida">
+                Barrida 👖
+            </button>
+
+        </p>
+
+    </section>
+
+    <!-- MENSAJES Y RESULTADOS -->
+    <section id="mensajes">
+        <p id="resultado"></p>
+        <div id="historial-combate"></div>
+    </section>
+
+    <!-- REINICIAR -->
+    <section id="reiniciar">
+
+        <button id="boton-reiniciar">
+            Reiniciar
+        </button>
+
+    </section>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="./avatar.js"></script>
+
+</body>
+
+</html>

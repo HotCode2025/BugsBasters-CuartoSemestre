@@ -1,0 +1,568 @@
+/* ==========================================
+   FUENTES
+   ========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=MedievalSharp&display=swap');
+
+
+/* ==========================================
+   CONFIGURACIÓN GENERAL
+   ========================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family: "Cinzel", serif;
+
+    background:
+        linear-gradient(
+            rgba(20, 18, 14, 0.35),
+            rgba(20, 18, 14, 0.35)
+        ),
+        url("../img/fondo1.png");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    color: #fff;
+
+    text-align: center;
+}
+
+
+/* ==========================================
+   TÍTULO
+   ========================================== */
+
+h1 {
+    margin-top: 50px;
+
+    font-family: "MedievalSharp", cursive;
+
+    font-size: clamp(60px, 8vw, 100px);
+
+    letter-spacing: 12px;
+
+    color: #f5f0df;
+
+    text-shadow:
+        4px 4px 0px #151515,
+        0px 0px 20px rgba(255, 255, 255, 0.25);
+
+    line-height: 1;
+}
+
+
+/* Subtítulo */
+
+h1::after {
+    content: "THE LEGEND OF AANG";
+
+    display: block;
+
+    margin-top: 15px;
+
+    font-family: "Cinzel", serif;
+
+    font-size: clamp(18px, 2vw, 30px);
+
+    font-weight: 500;
+
+    letter-spacing: 8px;
+
+    color: #e7d8b5;
+
+    text-shadow: 2px 2px 5px #000;
+}
+
+
+/* ==========================================
+   SECCIÓN INICIO
+   ========================================== */
+
+#inicio {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 30px;
+
+    margin-top: 60px;
+}
+
+
+/* Botones generales */
+
+#inicio button,
+#boton-volver,
+#boton-personaje,
+#boton-reiniciar {
+    padding: 15px 45px;
+
+    border: 2px solid #c8a75b;
+    border-radius: 8px;
+
+    background: rgba(30, 25, 20, 0.9);
+
+    color: #f5f0df;
+
+    font-family: "Cinzel", serif;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+}
+
+
+/* Hover */
+
+#inicio button:hover,
+#boton-volver:hover,
+#boton-personaje:hover,
+#boton-reiniciar:hover {
+    transform: translateY(-4px);
+
+    background: #c08a32;
+
+    color: #fff;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+
+/* ==========================================
+   SELECCIÓN DE PERSONAJE
+   ========================================== */
+
+#seleccionar-personaje {
+    margin-top: 130px;
+
+    
+}
+
+
+#seleccionar-personaje h2 {
+    margin-top: 20px;
+
+    font-family: "MedievalSharp", cursive;
+
+    font-size: 35px;
+
+    letter-spacing: 4px;
+
+    color: #f0dfb1;
+
+    text-shadow: 2px 2px 5px #000;
+}
+
+
+/* ==========================================
+   RADIO BUTTONS
+   ========================================== */
+
+/* Ocultamos el círculo tradicional */
+
+#seleccionar-personaje input[type="radio"] {
+    display: none;
+}
+
+
+/* ==========================================
+   TARJETAS DE PERSONAJES
+   ========================================== */
+
+#seleccionar-personaje label {
+    display: inline-flex;
+
+    width: 280px;
+    height: 150px;
+
+    margin: 10px;
+
+    align-items: flex-end;
+    justify-content: center;
+
+    padding-bottom: 20px;
+
+    border: 3px solid #a38c76;
+    border-radius: 15px;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    font-family: "Cinzel", serif;
+
+    font-size: 24px;
+    font-weight: 800;
+
+    color: white;
+
+    text-shadow:
+        2px 2px 4px #000,
+        0 0 10px #000;
+
+    cursor: pointer;
+
+    position: relative;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border 0.3s ease;
+}
+
+
+/* Oscurecemos un poco la parte inferior */
+
+#seleccionar-personaje label::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 100px;
+
+    background: linear-gradient(
+        transparent,
+        rgba(0, 0, 0, 0.85)
+    );
+
+    pointer-events: none;
+}
+
+
+/* El nombre queda por encima del degradado */
+
+#seleccionar-personaje label {
+    z-index: 1;
+}
+
+
+/* ==========================================
+   IMÁGENES DE LOS PERSONAJES
+   ========================================== */
+
+#zuko + label {
+    background-image: url("../img/zuko.png");
+}
+
+#katara + label {
+    background-image: url("../img/katara.png");
+}
+
+#aang + label {
+    background-image: url("../img/aang.png");
+}
+
+#toph + label {
+    background-image: url("../img/toph.png");
+}
+
+
+/* ==========================================
+   EFECTO HOVER
+   ========================================== */
+
+#seleccionar-personaje label:hover {
+    transform: translateY(-10px) scale(1.03);
+
+    box-shadow:
+        0 15px 30px rgba(0, 0, 0, 0.6);
+}
+
+
+/* ==========================================
+   PERSONAJE SELECCIONADO
+   ========================================== */
+
+/* Zuko */
+
+#zuko:checked + label {
+    border-color: #6d2116;
+
+    box-shadow:
+        0 0 25px rgba(58, 12, 5, 0.8);
+}
+
+
+/* Katara */
+
+#katara:checked + label {
+    border-color: #4da3d9;
+
+    box-shadow:
+        0 0 25px rgba(77, 163, 217, 0.8);
+}
+
+
+/* Aang */
+
+#aang:checked + label {
+    border-color: #e6a72e;
+
+    box-shadow:
+        0 0 25px rgba(230, 167, 46, 0.8);
+}
+
+
+/* Toph */
+
+#toph:checked + label {
+    border-color: #62a64b;
+
+    box-shadow:
+        0 0 25px rgba(98, 166, 75, 0.8);
+}
+
+
+/* ==========================================
+   BOTÓN SELECCIONAR
+   ========================================== */
+
+#boton-personaje {
+    display: block;
+
+    margin: 35px auto 0;
+
+    padding: 15px 50px;
+
+    font-size: 18px;
+}
+
+
+/* ==========================================
+   REGLAS DEL JUEGO
+   ========================================== */
+
+#reglas-del-juego {
+    max-width: 900px;
+
+    margin: 50px auto;
+
+    padding: 40px;
+
+    background: rgba(20, 20, 20, 0.88);
+
+    border: 2px solid #b99b55;
+
+    border-radius: 15px;
+
+    text-align: left;
+
+    line-height: 1.7;
+}
+
+
+#reglas-del-juego h4 {
+    margin-bottom: 25px;
+
+    text-align: center;
+
+    font-family: "MedievalSharp", cursive;
+
+    font-size: 32px;
+
+    color: #e7d8b5;
+}
+
+
+#reglas-del-juego ol {
+    padding-left: 30px;
+}
+
+
+#reglas-del-juego ul {
+    padding-left: 30px;
+}
+
+
+#boton-volver {
+    display: block;
+
+    margin: 30px auto 0;
+}
+
+
+/* ==========================================
+   SELECCIÓN DE ATAQUE
+   ========================================== */
+
+#seleccionar-ataque {
+    margin-top: 50px;
+}
+
+
+#seleccionar-ataque h2 {
+    margin-bottom: 25px;
+
+    font-family: "MedievalSharp", cursive;
+
+    font-size: 35px;
+
+    color: #f0dfb1;
+}
+
+
+#seleccionar-ataque p {
+    margin: 15px;
+}
+
+
+/* ==========================================
+   BOTONES DE PODERES
+   ========================================== */
+
+#seleccionar-ataque button {
+    margin: 8px;
+
+    padding: 14px 25px;
+
+    border: 2px solid #b99b55;
+    border-radius: 8px;
+
+    background: rgba(20, 20, 20, 0.9);
+
+    color: white;
+
+    font-family: "Cinzel", serif;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+}
+
+
+#seleccionar-ataque button:hover {
+    transform: translateY(-4px);
+
+    background: #b58b3b;
+
+    box-shadow:
+        0 7px 15px rgba(0, 0, 0, 0.5);
+}
+
+
+/* ==========================================
+   MENSAJES
+   ========================================== */
+
+#mensajes {
+    max-width: 700px;
+
+    margin: 40px auto;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    border: 1px solid #b99b55;
+
+    border-radius: 10px;
+}
+
+
+#mensajes p {
+    font-size: 18px;
+
+    line-height: 1.6;
+}
+
+
+/* ==========================================
+   REINICIAR
+   ========================================== */
+
+#reiniciar {
+    margin: 30px 0 60px;
+}
+
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 1000px) {
+
+    #seleccionar-personaje label {
+        width: 200px;
+        height: 300px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    h1 {
+        font-size: 65px;
+
+        letter-spacing: 5px;
+    }
+
+
+    #inicio {
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+
+    #seleccionar-personaje label {
+        width: 180px;
+        height: 270px;
+
+        margin: 8px;
+    }
+
+
+    #reglas-del-juego {
+        margin: 30px 15px;
+
+        padding: 25px;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    h1 {
+        font-size: 48px;
+    }
+
+
+    h1::after {
+        font-size: 15px;
+
+        letter-spacing: 4px;
+    }
+
+
+    #seleccionar-personaje label {
+        width: 150px;
+        height: 230px;
+
+        font-size: 18px;
+    }
+
+}
