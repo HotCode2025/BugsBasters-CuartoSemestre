@@ -1,13 +1,9 @@
-/* ==========================================
-   FUENTES
-   ========================================== */
+/* FUENTES */
 
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=MedievalSharp&display=swap');
 
 
-/* ==========================================
-   CONFIGURACIÓN GENERAL
-   ========================================== */
+/*  CONFIGURACIÓN GENERAL  */
 
 * {
     box-sizing: border-box;
@@ -36,13 +32,27 @@ body {
     text-align: center;
 }
 
+/* SIMBOLOS TRIBUS */
+.simbolos-tribus ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding-top: 40px;
+  gap: 20px;          
+}
 
-/* ==========================================
-   TÍTULO
-   ========================================== */
+
+.icono-tribu {
+  width: 40px;        
+  height: 40px;
+  object-fit: contain;
+}
+
+/* TÍTULO */
 
 h1 {
-    margin-top: 50px;
+    margin-top: 10px;
 
     font-family: "MedievalSharp", cursive;
 
@@ -83,9 +93,7 @@ h1::after {
 }
 
 
-/* ==========================================
-   SECCIÓN INICIO
-   ========================================== */
+/* SECCIÓN INICIO */
 
 #inicio {
     display: flex;
@@ -142,9 +150,7 @@ h1::after {
 }
 
 
-/* ==========================================
-   SELECCIÓN DE PERSONAJE
-   ========================================== */
+/*  SELECCIÓN DE PERSONAJE  */
 
 #seleccionar-personaje {
     margin-top: 130px;
@@ -168,9 +174,7 @@ h1::after {
 }
 
 
-/* ==========================================
-   RADIO BUTTONS
-   ========================================== */
+/*   RADIO BUTTONS */
 
 /* Ocultamos el círculo tradicional */
 
@@ -179,9 +183,7 @@ h1::after {
 }
 
 
-/* ==========================================
-   TARJETAS DE PERSONAJES
-   ========================================== */
+/* TARJETAS DE PERSONAJES */
 
 #seleccionar-personaje label {
     display: inline-flex;
@@ -256,30 +258,26 @@ h1::after {
 }
 
 
-/* ==========================================
-   IMÁGENES DE LOS PERSONAJES
-   ========================================== */
+/*  IMÁGENES DE LOS PERSONAJES */
 
 #zuko + label {
-    background-image: url("../img/zuko.png");
+    background-image: url("../img/zuko.jpg");
 }
 
 #katara + label {
-    background-image: url("../img/katara.png");
+    background-image: url("../img/katara.jpg");
 }
 
 #aang + label {
-    background-image: url("../img/aang.png");
+    background-image: url("../img/aang.jpg");
 }
 
 #toph + label {
-    background-image: url("../img/toph.png");
+    background-image: url("../img/toph.jpg");
 }
 
 
-/* ==========================================
-   EFECTO HOVER
-   ========================================== */
+/*  EFECTO HOVER */
 
 #seleccionar-personaje label:hover {
     transform: translateY(-10px) scale(1.03);
@@ -289,9 +287,7 @@ h1::after {
 }
 
 
-/* ==========================================
-   PERSONAJE SELECCIONADO
-   ========================================== */
+/*  PERSONAJE SELECCIONADO */
 
 /* Zuko */
 
@@ -333,9 +329,7 @@ h1::after {
 }
 
 
-/* ==========================================
-   BOTÓN SELECCIONAR
-   ========================================== */
+/*  BOTÓN SELECCIONAR */
 
 #boton-personaje {
     display: block;
@@ -348,9 +342,7 @@ h1::after {
 }
 
 
-/* ==========================================
-   REGLAS DEL JUEGO
-   ========================================== */
+/* REGLAS DEL JUEGO */
 
 #reglas-del-juego {
     max-width: 900px;
@@ -401,9 +393,7 @@ h1::after {
 }
 
 
-/* ==========================================
-   SELECCIÓN DE ATAQUE
-   ========================================== */
+/*  SELECCIÓN DE ATAQUE */
 
 #seleccionar-ataque {
     margin-top: 50px;
@@ -426,9 +416,7 @@ h1::after {
 }
 
 
-/* ==========================================
-   BOTONES DE PODERES
-   ========================================== */
+/*  BOTONES DE PODERES  */
 
 #seleccionar-ataque button {
     margin: 8px;
@@ -498,71 +486,67 @@ h1::after {
 
 
 /* ==========================================
-   RESPONSIVE
+   RESPONSIVE (MÓVILES)
    ========================================== */
-
-@media (max-width: 1000px) {
-
-    #seleccionar-personaje label {
-        width: 200px;
-        height: 300px;
-    }
-
-}
-
 
 @media (max-width: 700px) {
 
     h1 {
-        font-size: 65px;
-
+        font-size: 55px;
         letter-spacing: 5px;
     }
 
-
     #inicio {
         flex-direction: column;
-
         gap: 15px;
     }
 
-
+    
     #seleccionar-personaje label {
-        width: 180px;
-        height: 270px;
-
-        margin: 8px;
+        display: flex;            
+        width: 85%;
+        max-width: 280px;
+        height: 180px;
+        margin: 15px auto;         
+        padding-bottom: 15px;
     }
-
+   
+    #seleccionar-ataque button {
+        display: block;
+        width: 85%;
+        max-width: 280px;
+        margin: 10px auto;
+    }
 
     #reglas-del-juego {
         margin: 30px 15px;
-
-        padding: 25px;
+        padding: 20px;
     }
 
+    #inicio button,
+    #boton-volver,
+    #boton-personaje,
+    #boton-reiniciar {
+        width: 85%;
+        max-width: 280px;
+        padding: 14px 20px;
+    }
 }
-
 
 @media (max-width: 450px) {
 
     h1 {
-        font-size: 48px;
+        font-size: 42px;
     }
-
 
     h1::after {
-        font-size: 15px;
-
-        letter-spacing: 4px;
+        font-size: 14px;
+        letter-spacing: 3px;
     }
-
 
     #seleccionar-personaje label {
-        width: 150px;
-        height: 230px;
-
-        font-size: 18px;
+        height: 160px;
+        font-size: 20px;
     }
-
 }
+
