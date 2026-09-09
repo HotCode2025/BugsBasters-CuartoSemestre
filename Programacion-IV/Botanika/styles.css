@@ -1,0 +1,30 @@
+/**
+ * Botanika & Co. — Estilos Globales Complementarios
+ * Tipografía, desplazamiento suave y personalización de barra de scroll.
+ */
+
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Smooth scrolling behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar styling for clean aesthetic */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F7F6F2;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #DED8CC;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #C7BDAB;
+}
