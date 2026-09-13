@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botanika & Co. | Plantas y Accesorios</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        botanika: {
+                            50: '#F7F6F2',
+                            100: '#EFECE6',
+                            200: '#DED8CC',
+                            300: '#C7BDAB',
+                            600: '#526E5D',
+                            700: '#3D5245',
+                            800: '#2A3830',
+                            terracota: '#D07A58',
+                            terracotaDark: '#B36343',
+                            beige: '#F4EFEA',
+                            sand: '#E6DFD5'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Custom CSS Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-botanika-50 text-botanika-800 font-sans antialiased selection:bg-botanika-200">
+
+    <!-- App Container -->
+    <div id="app" class="min-h-screen flex flex-col justify-between">
+
+        <!-- Header / Navegación -->
+        <header class="sticky top-0 z-50 bg-botanika-50/90 backdrop-blur-md border-b border-botanika-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()"
+                    class="md:hidden p-2 text-botanika-800 hover:text-botanika-600 transition">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+
+                <!-- Logo -->
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('home')">
+                    <span
+                        class="w-8 h-8 rounded-full bg-botanika-600 flex items-center justify-center text-white font-serif font-bold text-lg">B</span>
+                    <span class="font-serif tracking-wider text-xl font-medium">BOTANIKA <span
+                            class="text-botanika-terracota font-sans text-xs uppercase tracking-widest block -mt-1">Studio
+                            & Plantas</span></span>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                    <button onclick="navigateTo('home')"
+                        class="hover:text-botanika-600 transition pb-1 border-b-2 border-transparent hover:border-botanika-600">Home</button>
+                    <button onclick="navigateTo('catalog')"
+                        class="hover:text-botanika-600 transition pb-1 border-b-2 border-transparent hover:border-botanika-600">Catálogo</button>
+                    <button onclick="navigateTo('styleguide')"
+                        class="hover:text-botanika-600 transition pb-1 border-b-2 border-transparent hover:border-botanika-600 text-botanika-terracota">Guía
+                        de Estilos</button>
+                </nav>
+
+                <!-- Icons Action Bar -->
+                <div class="flex items-center space-x-4">
+                    <button onclick="navigateTo('profile')"
+                        class="p-2 hover:bg-botanika-100 rounded-full transition relative text-botanika-800"
+                        title="Mi Cuenta">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="navigateTo('cart')"
+                        class="p-2 hover:bg-botanika-100 rounded-full transition relative text-botanika-800"
+                        title="Carrito">
+                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                        <span id="cart-badge"
+                            class="absolute top-1 right-1 bg-botanika-terracota text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">2</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Dropdown -->
+            <div id="mobile-menu"
+                class="hidden md:hidden bg-botanika-100 border-b border-botanika-200 px-6 py-4 space-y-3">
+                <button onclick="navigateTo('home'); toggleMobileMenu();"
+                    class="block w-full text-left font-medium py-1">Home</button>
+                <button onclick="navigateTo('catalog'); toggleMobileMenu();"
+                    class="block w-full text-left font-medium py-1">Catálogo</button>
+                <button onclick="navigateTo('styleguide'); toggleMobileMenu();"
+                    class="block w-full text-left font-medium py-1 text-botanika-terracota">Guía de Estilos</button>
+            </div>
+        </header>
+
+        <!-- Main Dynamic Content Area -->
+        <main id="main-content" class="flex-grow">
+            <!-- Rendered by JavaScript dynamically -->
+        </main>
+
+        <!-- Toast Notification Container -->
+        <div id="toast"
+            class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-botanika-800 text-white px-6 py-3 rounded-lg shadow-xl flex items-center space-x-3">
+            <i data-lucide="check-circle" class="w-5 h-5 text-bot50"></i>
+            <span id="toast-message" class="text-sm font-medium">Producto agregado al carrito</span>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-botanika-100 border-t border-botanika-200 pt-16 pb-12 mt-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <span
+                            class="w-6 h-6 rounded-full bg-botanika-600 flex items-center justify-center text-white font-serif font-bold text-sm">B</span>
+                        <span class="font-serif tracking-wider text-lg font-medium">BOTANIKA</span>
+                    </div>
+                    <p class="text-sm text-botanika-700 leading-relaxed">
+                        Llenamos de vida y calma tus espacios con plantas seleccionadas y macetas de diseño artesanal.
+                    </p>
+                    <div class="flex space-x-4 pt-2">
+                        <a href="#"
+                            class="w-9 h-9 rounded-full bg-botanika-200 flex items-center justify-center hover:bg-botanika-600 hover:text-white transition"><i
+                                data-lucide="instagram" class="w-4 h-4"></i></a>
+                        <a href="#"
+                            class="w-9 h-9 rounded-full bg-botanika-200 flex items-center justify-center hover:bg-botanika-600 hover:text-white transition"><i
+                                data-lucide="facebook" class="w-4 h-4"></i></a>
+                        <a href="#"
+                            class="w-9 h-9 rounded-full bg-botanika-200 flex items-center justify-center hover:bg-botanika-600 hover:text-white transition"><i
+                                data-lucide="pinboard" class="w-4 h-4"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-medium mb-4 text-sm tracking-wider uppercase">Categorías</h4>
+                    <ul class="space-y-2 text-sm text-botanika-700">
+                        <li><a href="#" onclick="navigateTo('catalog')"
+                                class="hover:text-botanika-600 transition">Plantas de Interior</a></li>
+                        <li><a href="#" onclick="navigateTo('catalog')"
+                                class="hover:text-botanika-600 transition">Macetas y Soportes</a></li>
+                        <li><a href="#" onclick="navigateTo('catalog')"
+                                class="hover:text-botanika-600 transition">Sustratos & Nutrientes</a></li>
+                        <li><a href="#" onclick="navigateTo('catalog')" class="hover:text-botanika-600 transition">Kits
+                                para Principiantes</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium mb-4 text-sm tracking-wider uppercase">Ayuda & Cuidado</h4>
+                    <ul class="space-y-2 text-sm text-botanika-700">
+                        <li><a href="#" class="hover:text-botanika-600 transition">Guía de Riego</a></li>
+                        <li><a href="#" class="hover:text-botanika-600 transition">Envíos y Entregas</a></li>
+                        <li><a href="#" class="hover:text-botanika-600 transition">Cambios y Devoluciones</a></li>
+                        <li><a href="#" class="hover:text-botanika-600 transition">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium mb-4 text-sm tracking-wider uppercase">Newsletter</h4>
+                    <p class="text-sm text-botanika-700 mb-3">Recibe tips de botánica urbana y 10% OFF en tu primera
+                        compra.</p>
+                    <form onsubmit="event.preventDefault(); showToast('¡Gracias por suscribirte!');"
+                        class="flex flex-col space-y-2">
+                        <input type="email" placeholder="Tu correo electrónico"
+                            class="bg-botanika-50 border border-botanika-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600"
+                            required>
+                        <button type="submit"
+                            class="bg-botanika-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-botanika-700 transition">Suscribirme</button>
+                    </form>
+                </div>
+            </div>
+            <div
+                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-botanika-200 text-xs text-botanika-700 text-center flex flex-col sm:flex-row justify-between items-center">
+                <p>&copy; 2026 Botanika & Co. Todos los derechos reservados.</p>
+                <div class="flex space-x-6 mt-4 sm:mt-0">
+                    <a href="#" class="hover:underline">Privacidad</a>
+                    <a href="#" class="hover:underline">Términos y Condiciones</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- External Script -->
+    <script src="script.js"></script>
+</body>
+
+</html>
