@@ -62,6 +62,15 @@ let currentProductId = 1;
 /** @type {boolean} Indicador de validez del cupón de descuento promocional (10% OFF) */
 let discountApplied = false;
 
+/** @type {'mercadopago'|'card'|'transfer'} Método de pago seleccionado en el checkout */
+let selectedPaymentMethod = 'mercadopago';
+
+/** @type {'express'|'free'} Tipo de logística seleccionada en el checkout */
+let selectedShippingMethod = 'express';
+
+/** @type {string|null} Identificador de la transacción de pago retornado por Mercado Pago */
+let lastPaymentId = null;
+
 /**
  * Enrutador central de la SPA. Cambia la vista activa y renderiza el contenido sin recargar.
  * @param {'home'|'catalog'|'product'|'cart'|'checkout'|'profile'|'success'|'styleguide'} view - Nombre de la vista destino.
@@ -612,7 +621,142 @@ function applyDiscount() {
  * selección de logística de transporte (Envío Protegido vs Retiro) y métodos de pago.
  * @returns {string} Markup HTML de la vista Checkout.
  */
+/**
+ * Cambia el método de pago seleccionado en el checkout y refresca la vista.
+ * @param {'mercadopago'|'card'|'transfer'} method
+ */
+function setPaymentMethod(method) {
+    selectedPaymentMethod = method;
+    renderView();
+}
+
+/**
+ * Cambia la modalidad de logística seleccionada y refresca la vista.
+ * @param {'express'|'free'} method
+ */
+function setShippingMethod(method) {
+    selectedShippingMethod = method;
+    renderView();
+}
+
+/**
+ * Determina dinámicamente la URL base del backend según el entorno de ejecución:
+ * - En local (localhost / 127.0.0.1 / file:): se conecta a http://localhost:3000.
+ * - En producción (Vercel): utiliza ruta relativa '' apuntando al mismo dominio con HTTPS.
+ * - Soporta override manual mediante window.BOTANIKA_API_URL (ej: para backend en Render).
+ * @returns {string}
+ */
+function getApiBaseUrl() {
+    if (window.BOTANIKA_API_URL) {
+        return window.BOTANIKA_API_URL.replace(/\/+$/, '');
+    }
+    const isLocal = window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' || 
+                    window.location.protocol === 'file:';
+    return isLocal ? 'http://localhost:3000' : '';
+}
+
+/**
+ * Inicia el flujo de pago con Mercado Pago consumiendo el backend oficial en Express.
+ */
+async function handleMercadoPagoPayment() {
+    if (cart.length === 0) {
+        showToast('Tu carrito está vacío.');
+        return;
+    }
+
+    const btn = document.getElementById('checkout-submit-btn');
+    const originalContent = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `
+            <span class="inline-flex items-center">
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                Conectando con Mercado Pago...
+            </span>
+        `;
+    }
+
+    try {
+        showToast('Generando orden de pago segura...');
+        const shippingCost = selectedShippingMethod === 'free' ? 0 : 3500;
+        const buyerName = document.getElementById('buyer-name')?.value?.trim() || 'Lucía';
+        const buyerSurname = document.getElementById('buyer-surname')?.value?.trim() || 'Fernández';
+        const buyerEmail = document.getElementById('buyer-email')?.value?.trim() || 'comprador_test@botanika.com';
+
+        const apiBaseUrl = getApiBaseUrl();
+        // Capturar URL completa actual (limpia de parámetros o hashes) para preservar rutas en entornos locales y producción
+        let currentFullUrl = '';
+        try {
+            if (window.location.href && !window.location.href.startsWith('file:') && !window.location.href.includes('about:blank')) {
+                currentFullUrl = window.location.href.split('?')[0].split('#')[0];
+            }
+        } catch (e) {}
+
+        const clientOrigin = currentFullUrl || ((window.location.origin && window.location.origin !== 'null')
+            ? window.location.origin
+            : 'https://bugsbasters-cuartosemestre.vercel.app');
+
+        const response = await fetch(`${apiBaseUrl}/api/payments/create-preference`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                items: cart,
+                shippingCost,
+                clientUrl: clientOrigin,
+                payer: {
+                    name: buyerName,
+                    surname: buyerSurname,
+                    email: buyerEmail
+                }
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'No se pudo generar la preferencia de pago.');
+        }
+
+        // Seleccionar URL adecuada para Mercado Pago
+        const checkoutUrl = data.checkoutUrl || data.initPoint || data.sandboxInitPoint;
+        if (checkoutUrl) {
+            const redirectMsg = data.isSandbox 
+                ? 'Redirigiendo a Mercado Pago (Modo Sandbox)...' 
+                : 'Redirigiendo a Mercado Pago seguro...';
+            showToast(redirectMsg);
+            setTimeout(() => {
+                window.location.href = checkoutUrl;
+            }, 400);
+        } else {
+            throw new Error('No se recibió enlace de pago de Mercado Pago.');
+        }
+    } catch (error) {
+        console.error('Error al procesar pago con Mercado Pago:', error);
+        showToast(error.message || 'Error de conexión con el backend.');
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalContent;
+        }
+    }
+}
+
+/**
+ * Renderiza el proceso de Checkout: formulario de datos de entrega,
+ * selección de logística de transporte y métodos de pago (incluyendo Mercado Pago).
+ * @returns {string} Markup HTML de la vista Checkout.
+ */
 function renderCheckout() {
+    const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+    const discount = discountApplied ? subtotal * 0.1 : 0;
+    const shippingCost = selectedShippingMethod === 'free' ? 0 : 3500;
+    const total = Math.max(0, subtotal - discount + shippingCost);
+
     return `
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <div class="mb-8">
@@ -629,11 +773,15 @@ function renderCheckout() {
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                             <div>
                                 <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">Nombre</label>
-                                <input type="text" value="Lucía" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
+                                <input type="text" id="buyer-name" value="Lucía" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
                             </div>
                             <div>
                                 <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">Apellido</label>
-                                <input type="text" value="Fernández" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
+                                <input type="text" id="buyer-surname" value="Fernández" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">Email</label>
+                                <input type="email" id="buyer-email" value="lucia.fernandez@example.com" placeholder="tu-email@correo.com" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
                             </div>
                             <div class="sm:col-span-2">
                                 <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">Dirección</label>
@@ -654,25 +802,25 @@ function renderCheckout() {
                     <div class="bg-white p-6 sm:p-8 rounded-2xl border border-botanika-200 space-y-4">
                         <h3 class="font-serif text-xl font-medium flex items-center"><i data-lucide="truck" class="w-5 h-5 mr-2 text-botanika-600"></i> Método de Envío</h3>
                         <div class="space-y-3 pt-2">
-                            <label class="flex items-center justify-between p-4 rounded-xl border-2 border-botanika-600 bg-botanika-50 cursor-pointer">
+                            <label onclick="setShippingMethod('express')" class="flex items-center justify-between p-4 rounded-xl border-2 ${selectedShippingMethod === 'express' ? 'border-botanika-600 bg-botanika-50' : 'border-botanika-300 bg-white hover:border-botanika-600'} cursor-pointer transition">
                                 <div class="flex items-center space-x-3">
-                                    <input type="radio" name="shipping" checked class="text-botanika-600 focus:ring-botanika-600">
+                                    <input type="radio" name="shipping" ${selectedShippingMethod === 'express' ? 'checked' : ''} class="text-botanika-600 focus:ring-botanika-600">
                                     <div>
                                         <p class="font-medium text-sm">Envío Protegido Especial Botanika (Cuidado de hojas)</p>
-                                        <p class="text-xs text-botanika-700">Entrega en 48hs hábiles</p>
+                                        <p class="text-xs text-botanika-700">Entrega en 48hs hábiles con empaque climatizado</p>
                                     </div>
                                 </div>
                                 <span class="font-serif font-semibold">$3,500</span>
                             </label>
-                            <label class="flex items-center justify-between p-4 rounded-xl border border-botanika-300 bg-white cursor-pointer hover:border-botanika-600">
+                            <label onclick="setShippingMethod('free')" class="flex items-center justify-between p-4 rounded-xl border-2 ${selectedShippingMethod === 'free' ? 'border-botanika-600 bg-botanika-50' : 'border-botanika-300 bg-white hover:border-botanika-600'} cursor-pointer transition">
                                 <div class="flex items-center space-x-3">
-                                    <input type="radio" name="shipping" class="text-botanika-600 focus:ring-botanika-600">
+                                    <input type="radio" name="shipping" ${selectedShippingMethod === 'free' ? 'checked' : ''} class="text-botanika-600 focus:ring-botanika-600">
                                     <div>
-                                        <p class="font-medium text-sm">Retiro por Studio Palermo (Gratis)</p>
-                                        <p class="text-xs text-botanika-700">Listo en 24hs</p>
+                                        <p class="font-medium text-sm">Retiro por Studio Palermo</p>
+                                        <p class="text-xs text-botanika-700">Listo en 24hs hábiles en showroom</p>
                                     </div>
                                 </div>
-                                <span class="font-serif font-semibold">Gratis</span>
+                                <span class="font-serif font-semibold text-botanika-600">Gratis</span>
                             </label>
                         </div>
                     </div>
@@ -681,26 +829,53 @@ function renderCheckout() {
                     <div class="bg-white p-6 sm:p-8 rounded-2xl border border-botanika-200 space-y-4">
                         <h3 class="font-serif text-xl font-medium flex items-center"><i data-lucide="credit-card" class="w-5 h-5 mr-2 text-botanika-600"></i> Método de Pago</h3>
                         <div class="grid grid-cols-3 gap-3 pt-2">
-                            <button class="border-2 border-botanika-600 bg-botanika-50 p-3 rounded-xl text-center text-sm font-medium">Tarjeta</button>
-                            <button class="border border-botanika-300 bg-white p-3 rounded-xl text-center text-sm font-medium hover:border-botanika-600">Mercado Pago</button>
-                            <button class="border border-botanika-300 bg-white p-3 rounded-xl text-center text-sm font-medium hover:border-botanika-600">Transferencia</button>
+                            <button onclick="setPaymentMethod('mercadopago')" class="border-2 ${selectedPaymentMethod === 'mercadopago' ? 'border-[#009EE3] bg-blue-50/60 text-[#009EE3] font-bold shadow-sm' : 'border-botanika-300 bg-white hover:border-botanika-600 font-medium'} p-3 rounded-xl text-center text-sm transition flex items-center justify-center space-x-1">
+                                <i data-lucide="wallet" class="w-4 h-4"></i>
+                                <span>Mercado Pago</span>
+                            </button>
+                            <button onclick="setPaymentMethod('card')" class="border-2 ${selectedPaymentMethod === 'card' ? 'border-botanika-600 bg-botanika-50 text-botanika-800 font-bold shadow-sm' : 'border-botanika-300 bg-white hover:border-botanika-600 font-medium'} p-3 rounded-xl text-center text-sm transition">
+                                Tarjeta
+                            </button>
+                            <button onclick="setPaymentMethod('transfer')" class="border-2 ${selectedPaymentMethod === 'transfer' ? 'border-botanika-600 bg-botanika-50 text-botanika-800 font-bold shadow-sm' : 'border-botanika-300 bg-white hover:border-botanika-600 font-medium'} p-3 rounded-xl text-center text-sm transition">
+                                Transferencia
+                            </button>
                         </div>
-                        <div class="space-y-3 pt-4">
-                            <div>
-                                <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">Número de Tarjeta</label>
-                                <input type="text" placeholder="4532 •••• •••• 8920" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">Vencimiento</label>
-                                    <input type="text" placeholder="MM/AA" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
+
+                        ${selectedPaymentMethod === 'mercadopago' ? `
+                            <div class="bg-[#F5F9FD] border border-[#D0E6F9] rounded-2xl p-5 space-y-3 pt-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="bg-[#009EE3] text-white px-3 py-1 rounded-lg text-xs font-bold tracking-wider uppercase">Recomendado</div>
+                                    <span class="text-sm font-semibold text-gray-800">Checkout Oficial Mercado Pago</span>
                                 </div>
+                                <p class="text-xs text-gray-600 leading-relaxed">
+                                    Serás redirigido a la pasarela segura de Mercado Pago. Podrás abonar con dinero en cuenta, tarjetas de crédito/débito y cuotas con todas las promociones bancarias vigentes.
+                                </p>
+                            </div>
+                        ` : selectedPaymentMethod === 'card' ? `
+                            <div class="space-y-3 pt-4">
                                 <div>
-                                    <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">CVV</label>
-                                    <input type="password" placeholder="•••" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
+                                    <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">Número de Tarjeta</label>
+                                    <input type="text" placeholder="4532 •••• •••• 8920" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">Vencimiento</label>
+                                        <input type="text" placeholder="MM/AA" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold uppercase tracking-wider text-botanika-700 block mb-1">CVV</label>
+                                        <input type="password" placeholder="•••" class="w-full bg-botanika-50 border border-botanika-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-botanika-600">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        ` : `
+                            <div class="bg-botanika-50 border border-botanika-200 rounded-2xl p-5 space-y-2 text-xs text-botanika-700">
+                                <p class="font-semibold text-botanika-800">Datos Bancarios para Transferencia:</p>
+                                <p><strong>Alias:</strong> BOTANIKA.PLANTAS</p>
+                                <p><strong>CBU:</strong> 0000003100045892110294</p>
+                                <p class="text-[11px] text-botanika-600 mt-2">Envía el comprobante a pagos@botanika.com tras confirmar tu orden.</p>
+                            </div>
+                        `}
                     </div>
                 </div>
 
@@ -709,22 +884,35 @@ function renderCheckout() {
                     <h3 class="font-serif text-xl font-medium border-b border-botanika-200 pb-4">Resumen de Compra</h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between text-botanika-700">
-                            <span>Subtotal</span>
-                            <span>$46,500</span>
+                            <span>Subtotal (${cart.reduce((a, b) => a + b.qty, 0)} ítems)</span>
+                            <span>$${subtotal.toLocaleString()}</span>
                         </div>
+                        ${discountApplied ? `
+                            <div class="flex justify-between text-botanika-terracota">
+                                <span>Descuento aplicado (10%)</span>
+                                <span>-$${discount.toLocaleString()}</span>
+                            </div>
+                        ` : ''}
                         <div class="flex justify-between text-botanika-700">
-                            <span>Envío Protegido</span>
-                            <span>$3,500</span>
+                            <span>${selectedShippingMethod === 'free' ? 'Retiro en Studio' : 'Envío Protegido'}</span>
+                            <span>${shippingCost === 0 ? 'Gratis' : '$' + shippingCost.toLocaleString()}</span>
                         </div>
                         <div class="flex justify-between font-serif font-semibold text-lg text-botanika-800 pt-3 border-t border-botanika-200">
                             <span>Total a Pagar</span>
-                            <span>$50,000</span>
+                            <span>$${total.toLocaleString()}</span>
                         </div>
                     </div>
 
-                    <button onclick="navigateTo('success'); cart = [];" class="w-full bg-botanika-600 hover:bg-botanika-700 text-white rounded-xl py-4 text-sm font-medium transition text-center shadow-md block">
-                        Confirmar y Pagar $50,000
-                    </button>
+                    ${selectedPaymentMethod === 'mercadopago' ? `
+                        <button id="checkout-submit-btn" onclick="handleMercadoPagoPayment()" class="w-full bg-[#009EE3] hover:bg-[#0082ba] text-white rounded-xl py-4 text-sm font-semibold transition text-center shadow-md flex items-center justify-center space-x-2">
+                            <i data-lucide="wallet" class="w-5 h-5"></i>
+                            <span>Pagar con Mercado Pago $${total.toLocaleString()}</span>
+                        </button>
+                    ` : `
+                        <button onclick="navigateTo('success'); cart = [];" class="w-full bg-botanika-600 hover:bg-botanika-700 text-white rounded-xl py-4 text-sm font-medium transition text-center shadow-md block">
+                            Confirmar y Pagar $${total.toLocaleString()}
+                        </button>
+                    `}
                 </div>
             </div>
         </div>
@@ -737,15 +925,16 @@ function renderCheckout() {
  * @returns {string} Markup HTML de la vista Éxito.
  */
 function renderSuccess() {
+    const orderNumber = lastPaymentId ? `#MP-${lastPaymentId}` : '#BOT-84920';
     return `
         <div class="max-w-3xl mx-auto px-4 py-20 text-center space-y-6">
             <div class="w-20 h-20 bg-botanika-600 text-white rounded-full flex items-center justify-center mx-auto shadow-lg">
                 <i data-lucide="check" class="w-10 h-10"></i>
             </div>
             <span class="text-botanika-terracota font-semibold text-xs tracking-widest uppercase">¡Compra exitosa!</span>
-            <h1 class="font-serif text-4xl text-botanika-800">Gracias por tu pedido, Lucía</h1>
+            <h1 class="font-serif text-4xl text-botanika-800">Gracias por tu pedido</h1>
             <p class="text-botanika-700 text-sm max-w-md mx-auto leading-relaxed">
-                Hemos recibido tu pago correctamente. Tu número de pedido es <strong class="text-botanika-800">#BOT-84920</strong>. Te enviaremos el seguimiento por correo electrónico.
+                Hemos recibido tu pago correctamente a través de Mercado Pago. Tu número de comprobante es <strong class="text-botanika-800">${orderNumber}</strong>. Te enviaremos el seguimiento por correo electrónico.
             </p>
             <div class="pt-6">
                 <button onclick="navigateTo('home')" class="bg-botanika-600 hover:bg-botanika-700 text-white px-8 py-3.5 rounded-xl font-medium text-sm transition shadow-sm">
@@ -923,7 +1112,40 @@ function renderStyleGuide() {
 
 /**
  * Inicialización de la aplicación al completar la carga del documento en el navegador.
+ * Detecta si el usuario retorna desde el checkout de Mercado Pago.
  */
-window.onload = function () {
+function handlePaymentReturnAndInit() {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('status') || params.get('collection_status');
+    const paymentId = params.get('payment_id') || params.get('collection_id');
+
+    if (paymentId) {
+        lastPaymentId = paymentId;
+    }
+
+    if (status === 'approved') {
+        cart = [];
+        navigateTo('success');
+        showToast('¡Pago aprobado con éxito vía Mercado Pago!');
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+    } else if (status === 'failure' || status === 'rejected') {
+        navigateTo('cart');
+        showToast('El pago en Mercado Pago fue cancelado o rechazado.');
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+    } else if (status === 'pending') {
+        navigateTo('profile');
+        showToast('Tu pago con Mercado Pago se encuentra en proceso.');
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+    }
+
     renderView();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', handlePaymentReturnAndInit);
+} else {
+    handlePaymentReturnAndInit();
 }
