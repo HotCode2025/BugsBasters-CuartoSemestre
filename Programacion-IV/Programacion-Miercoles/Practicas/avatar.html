@@ -153,18 +153,28 @@
     <section id="seleccionar-personaje">
 
         <h2>Elige tu Personaje</h2>
-
-        <input type="radio" name="personaje" id="zuko">
+     
+        <input type="radio" name="personaje" id="zuko" />
         <label for="zuko">Zuko</label>
 
-        <input type="radio" name="personaje" id="katara">
+        <input type="radio" name="personaje" id="katara" />
         <label for="katara">Katara</label>
 
-        <input type="radio" name="personaje" id="aang">
+        <input type="radio" name="personaje" id="aang" />
         <label for="aang">Aang</label>
 
-        <input type="radio" name="personaje" id="toph">
+        <input type="radio" name="personaje" id="toph" />
         <label for="toph">Toph</label>
+
+        <!-- ➕ NUEVOS PERSONAJES -->
+        <input type="radio" name="personaje" id="sokka" />
+        <label for="sokka">Sokka</label>
+
+        <input type="radio" name="personaje" id="iroh" />
+        <label for="iroh">Iroh</label>
+
+        <input type="radio" name="personaje" id="suki" />
+        <label for="suki">Suki</label>
 
 
         <button id="boton-personaje">
@@ -229,6 +239,17 @@
             Reiniciar
         </button>
 
+    </section>
+
+    <section id="musica">
+    <audio id="reproductor-musica" autoplay loop>
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="contenedor-audio">
+        <button id="boton-mute">🔊</button>
+        <input type="range" id="barra-volumen" min="0" max="1" step="0.01" value="0.5">
+    </div>
     </section>
 
 

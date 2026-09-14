@@ -276,6 +276,17 @@ h1::after {
     background-image: url("../img/toph.jpg");
 }
 
+#sokka + label {
+    background-image: url("../img/sokka.jpg");
+}
+#iroh + label {
+    background-image: url("../img/iroh.jpg");
+}
+#suki + label {
+    background-image: url("../img/suki.jpg");
+}
+
+
 
 /*  EFECTO HOVER */
 
@@ -287,57 +298,44 @@ h1::after {
 }
 
 
-/*  PERSONAJE SELECCIONADO */
+/* ==========================================
+   PERSONAJE SELECCIONADO (:checked) POR TRIBU
+   ========================================== */
 
-/* Zuko */
-
-#zuko:checked + label {
+/* Tribu del Fuego (Rojo / Fuego) */
+#zuko:checked + label,
+#iroh:checked + label {
     border-color: #6d2116;
-
-    box-shadow:
-        0 0 25px rgba(58, 12, 5, 0.8);
+    box-shadow: 0 0 25px rgba(58, 12, 5, 0.8);
 }
 
-
-/* Katara */
-
-#katara:checked + label {
+/* Tribu del Agua (Azul / Agua) */
+#katara:checked + label,
+#sokka:checked + label {
     border-color: #4da3d9;
-
-    box-shadow:
-        0 0 25px rgba(77, 163, 217, 0.8);
+    box-shadow: 0 0 25px rgba(77, 163, 217, 0.8);
 }
 
-
-/* Aang */
-
+/* Nómadas del Aire (Amarillo / Aire) */
 #aang:checked + label {
     border-color: #e6a72e;
-
-    box-shadow:
-        0 0 25px rgba(230, 167, 46, 0.8);
+    box-shadow: 0 0 25px rgba(230, 167, 46, 0.8);
 }
 
-
-/* Toph */
-
-#toph:checked + label {
+/* Reino de la Tierra (Verde / Tierra) */
+#toph:checked + label,
+#suki:checked + label {
     border-color: #62a64b;
-
-    box-shadow:
-        0 0 25px rgba(98, 166, 75, 0.8);
+    box-shadow: 0 0 25px rgba(98, 166, 75, 0.8);
 }
 
 
-/*  BOTÓN SELECCIONAR */
+/* BOTÓN SELECCIONAR */
 
 #boton-personaje {
     display: block;
-
     margin: 35px auto 0;
-
     padding: 15px 50px;
-
     font-size: 18px;
 }
 
@@ -550,3 +548,40 @@ h1::after {
     }
 }
 
+ /*  MÚSICA */
+#musica {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; /* Asegura que quede por encima de los fondos y botones */
+    margin: 0;
+}
+
+.contenedor-audio {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(20, 20, 20, 0.85);
+    padding: 8px 16px;
+    border: 2px solid #b99b55;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+#boton-mute {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#boton-mute:hover {
+    transform: scale(1.15);
+}
+
+#barra-volumen {
+    accent-color: #c08a32; /* Color de la barra en navegadores modernos */
+    cursor: pointer;
+    width: 100px;
+}
