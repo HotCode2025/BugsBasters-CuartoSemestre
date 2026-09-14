@@ -228,7 +228,6 @@ El diseño sigue una filosofía biofílica, orgánica y minimalista.
 
 ## 💡 8. Lógica de Negocio y Simulaciones
 
-```mermaid
 graph LR
     subgraph Carrito
         A[Ítems en cart] --> B[Calcular Subtotal]
@@ -242,7 +241,7 @@ graph LR
     G --> H[Checkout]
     H -->|Pagar| I[Vaciar Carrito cart = []]
     I --> J[Generar Orden #BOT-84920]
-```
+
 
 ### Funciones Principales:
 * `addToCart(id)`: Busca el producto por ID, incrementa la cantidad si ya existía en el carrito o lo añade como nuevo elemento; actualiza el badge numérico y dispara un toast informativo.
