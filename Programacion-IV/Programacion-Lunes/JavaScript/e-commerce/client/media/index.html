@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <title>E-commerce</title>
 </head>
 
@@ -13,8 +14,10 @@
     <div class="card-products-container">
         <div class="card-products" id="shopContent"></div>
     </div>
+    <!--cart btn-->
     <div class="cart-btn" id="cart-btn">🛒</div>
-
+    <!--cart counter-->
+    <span class="cart-counter" id="cart-counter" style="display: none;">0</span>
     <!--modal-->
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-container" id="modal-container"></div>
