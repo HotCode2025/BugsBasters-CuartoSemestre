@@ -9,6 +9,19 @@
 
 <body>
 
+
+    <section id="musica">
+    <audio id="reproductor-musica" autoplay loop>
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="contenedor-audio">
+        <button id="boton-mute">🔊</button>
+        <input type="range" id="barra-volumen" min="0" max="1" step="0.01" value="0.5">
+    </div>
+    </section>
+
+
     <!-- SÍMBOLOS DE LAS TRIBUS -->
     <div class="simbolos-tribus">
     <ul>
@@ -239,17 +252,6 @@
             Reiniciar
         </button>
 
-    </section>
-
-    <section id="musica">
-    <audio id="reproductor-musica" autoplay loop>
-        <source src="musica.mp3" type="audio/mpeg">
-    </audio>
-
-    <div class="contenedor-audio">
-        <button id="boton-mute">🔊</button>
-        <input type="range" id="barra-volumen" min="0" max="1" step="0.01" value="0.5">
-    </div>
     </section>
 
 
