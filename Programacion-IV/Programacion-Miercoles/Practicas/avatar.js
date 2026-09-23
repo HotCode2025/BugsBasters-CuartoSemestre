@@ -288,3 +288,24 @@ function actualizarIcono(volumen) {
         botonMute.innerText = "🔊";
     }
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const audio = document.getElementById('reproductor-musica');
+    const botonMute = document.getElementById('boton-mute');
+    const barraVolumen = document.getElementById('barra-volumen');
+
+    if (!audio || !botonMute || !barraVolumen) return;
+
+    // 1. Iniciar música en el primer clic del usuario en la página
+    const activarAudioEnPrimerClic = () => {
+        audio.play().catch(error => {
+            console.log("Autoplay bloqueado por el navegador:", error);
+        });
+    };
+
+    document.addEventListener('click', activarAudioEnPrimerClic, { once: true });
+
+    // Evitar propagación de clics dentro de la barra de volumen
+    barraVolumen.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+});
