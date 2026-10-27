@@ -122,8 +122,9 @@ function volverInicio() {
     seccionPersonaje.style.display = "none";
 }
 
+
 function seleccionarPersonaje() {
-    // Buscamos en el nuevo array "avatares"
+    // Buscamos el personaje seleccionado
     const personajeSeleccionado = avatares.find(p => {
         const input = document.getElementById(p.id);
         return input && input.checked;
@@ -134,24 +135,41 @@ function seleccionarPersonaje() {
         return;
     }
 
-    jugador = personajeSeleccionado;
-    jugador.reiniciarVidas();
+    // Creamos una instancia independiente para el jugador
+    jugador = new Personaje(
+        personajeSeleccionado.id,
+        personajeSeleccionado.nombre,
+        personajeSeleccionado.foto,
+        personajeSeleccionado.elemento
+    );
 
-    // Seleccionamos un enemigo aleatorio del array "avatares"
+    jugador.asignarAtaques(listaAtaquesGlobales);
+
+    // Elegimos un enemigo aleatorio
     const indiceAleatorio = Math.floor(Math.random() * avatares.length);
-    enemigo = avatares[indiceAleatorio];
-    enemigo.reiniciarVidas();
+    const personajeEnemigo = avatares[indiceAleatorio];
 
+    // Creamos una instancia independiente para el enemigo
+    enemigo = new Personaje(
+        personajeEnemigo.id,
+        personajeEnemigo.nombre,
+        personajeEnemigo.foto,
+        personajeEnemigo.elemento
+    );
+
+    enemigo.asignarAtaques(listaAtaquesGlobales);
+
+    // Mostramos los personajes y sus vidas iniciales
     textoPersonajeJugador.innerText = jugador.nombre;
     textoPersonajeEnemigo.innerText = enemigo.nombre;
     textoVidasJugador.innerText = jugador.vidas;
     textoVidasEnemigo.innerText = enemigo.vidas;
 
+    // Mostramos la sección de combate
     seccionPersonaje.style.display = "none";
     seccionAtaque.style.display = "block";
     seccionMensajes.style.display = "block";
 }
-
 
 // COMBATE BASADO EN OBJETOS
 function ejecutarAtaque(objetoAtaque) {
