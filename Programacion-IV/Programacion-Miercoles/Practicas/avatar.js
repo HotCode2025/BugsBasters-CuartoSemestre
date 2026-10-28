@@ -567,24 +567,33 @@ function detectarEncuentro() {
         return;
     }
 
-    const centroJugadorX = posicionJugador.x + anchoJugador / 2;
-    const centroJugadorY = posicionJugador.y + altoJugador / 2;
+    // Límites del jugador
+    const izquierdaJugador = posicionJugador.x;
+    const derechaJugador = posicionJugador.x + anchoJugador;
+    const arribaJugador = posicionJugador.y;
+    const abajoJugador = posicionJugador.y + altoJugador;
 
-    const centroEnemigoX = posicionEnemigo.x + anchoJugador / 2;
-    const centroEnemigoY = posicionEnemigo.y + altoJugador / 2;
+    // Límites del enemigo
+    const izquierdaEnemigo = posicionEnemigo.x;
+    const derechaEnemigo = posicionEnemigo.x + anchoJugador;
+    const arribaEnemigo = posicionEnemigo.y;
+    const abajoEnemigo = posicionEnemigo.y + altoJugador;
 
-    const distanciaX = centroJugadorX - centroEnemigoX;
-    const distanciaY = centroJugadorY - centroEnemigoY;
-
-    const distancia = Math.sqrt(
-        distanciaX ** 2 + distanciaY ** 2
+    // Comprobamos si los rectángulos se superponen
+    const hayColision = !(
+        abajoJugador <= arribaEnemigo ||
+        arribaJugador >= abajoEnemigo ||
+        derechaJugador <= izquierdaEnemigo ||
+        izquierdaJugador >= derechaEnemigo
     );
 
-    if (distancia <= distanciaEncuentro) {
-    encuentroActivo = true;
-    avisoEncuentro.style.display = "block";
+    if (hayColision) {
+        encuentroActivo = true;
+        avisoEncuentro.style.display = "block";
+    }
 }
-}
+
+
 function iniciarCombateDesdeMapa() {
     avisoEncuentro.style.display = "none";
     continuarAlCombate();
