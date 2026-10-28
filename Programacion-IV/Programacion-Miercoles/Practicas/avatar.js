@@ -82,7 +82,7 @@ avatares.push(zuko, katara, aang, toph);
 
 // Instancias nuevas
 let sokka = new Personaje("sokka", "Sokka", "../img/sokka.jpg", "No Maestro", "/Programacion-IV/Programacion-Miercoles/Practicas/img/sokka-mapa.png");
-let iroh = new Personaje("iroh", "Iroh", "../img/iroh.jpg", "Fuego", "/Programacion-IV/Programacion-Miercoles/Practicas/img/iroh-mapa.webp");
+let iroh = new Personaje("iroh", "Iroh", "../img/iroh.jpg", "Fuego", "/Programacion-IV/Programacion-Miercoles/Practicas/img/iroh-mapa.png");
 let suki = new Personaje("suki", "Suki", "../img/suki.jpg", "Guerrera Kyoshi", "/Programacion-IV/Programacion-Miercoles/Practicas/img/suki-mapa.webp");
 
 // Los empujas al array
@@ -170,7 +170,7 @@ let intervaloMovimientoEnemigo = null;
 let intervaloEncuentro = null;
 
 
-const anchoJugador = 110;
+const anchoJugador = 100;
 const altoJugador = 130;
 const velocidadJugador = 4;
 
@@ -377,6 +377,25 @@ function dibujarMapa() {
     // Limpiamos el canvas
     lienzo.clearRect(0, 0, mapa.width, mapa.height);
 
+    function dibujarSombra(x, y, ancho) {
+    lienzo.save();
+
+    lienzo.fillStyle = "rgba(0, 0, 0, 0.25)";
+    lienzo.beginPath();
+    lienzo.ellipse(
+        x + ancho / 2,
+        y + altoJugador - 3,
+        ancho * 0.3,
+        6,
+        0,
+        0,
+        Math.PI * 2
+    );
+    lienzo.fill();
+
+    lienzo.restore();
+}
+
     // Dibujamos el fondo cuando esté cargado
     if (
         mapaBackground.complete &&
@@ -390,7 +409,7 @@ function dibujarMapa() {
             mapa.height
         );
     }
-
+    dibujarSombra(posicionJugador.x, posicionJugador.y, anchoJugador);
     // Dibujamos al jugador
     if (jugador?.mapaFoto?.complete && jugador.mapaFoto.naturalWidth > 0) {
     lienzo.drawImage(
@@ -401,7 +420,7 @@ function dibujarMapa() {
         altoJugador
     );
 }
-
+    dibujarSombra(posicionEnemigo.x, posicionEnemigo.y, anchoJugador);
     // Dibujamos al enemigo
     if (enemigo && enemigo.mapaFoto.complete && enemigo.mapaFoto.naturalWidth > 0) {
     lienzo.drawImage(
@@ -482,21 +501,57 @@ function actualizarMovimiento() {
     dibujarMapa();
 }
 
+
 function actualizarMovimientoEnemigo() {
-    if (sectionVerMapa.style.display === "none" || !enemigo) return;
-
-    posicionEnemigo.x += velocidadEnemigo * posicionEnemigo.direccion;
-
-    // Cambiar de dirección al llegar a los bordes
-    if (posicionEnemigo.x <= 0) {
-        posicionEnemigo.x = 0;
-        posicionEnemigo.direccion = 1;
+    if (sectionVerMapa.style.display === "none" || !enemigo || !jugador) {
+        return;
     }
 
-    if (posicionEnemigo.x + anchoJugador >= mapa.width) {
-        posicionEnemigo.x = mapa.width - anchoJugador;
-        posicionEnemigo.direccion = -1;
+    // Calculamos la distancia entre los personajes
+    const centroJugadorX = posicionJugador.x + anchoJugador / 2;
+    const centroJugadorY = posicionJugador.y + altoJugador / 2;
+
+    const centroEnemigoX = posicionEnemigo.x + anchoJugador / 2;
+    const centroEnemigoY = posicionEnemigo.y + altoJugador / 2;
+
+    const distanciaX = centroJugadorX - centroEnemigoX;
+    const distanciaY = centroJugadorY - centroEnemigoY;
+
+    const distancia = Math.sqrt(
+        distanciaX ** 2 + distanciaY ** 2
+    );
+
+    // Si el jugador está cerca, el enemigo lo persigue
+    if (distancia < 250) {
+        if (distancia > 5) {
+            posicionEnemigo.x += (distanciaX / distancia) * velocidadEnemigo;
+            posicionEnemigo.y += (distanciaY / distancia) * velocidadEnemigo;
+        }
+    } else {
+        // Si está lejos, el enemigo patrulla horizontalmente
+        posicionEnemigo.x += velocidadEnemigo * posicionEnemigo.direccion;
+
+        if (posicionEnemigo.x <= 0) {
+            posicionEnemigo.x = 0;
+            posicionEnemigo.direccion = 1;
+        }
+
+        if (posicionEnemigo.x + anchoJugador >= mapa.width) {
+            posicionEnemigo.x = mapa.width - anchoJugador;
+            posicionEnemigo.direccion = -1;
+        }
     }
+
+    // Mantener al enemigo dentro del mapa
+    posicionEnemigo.x = Math.max(
+        0,
+        Math.min(posicionEnemigo.x, mapa.width - anchoJugador)
+    );
+
+    posicionEnemigo.y = Math.max(
+        0,
+        Math.min(posicionEnemigo.y, mapa.height - altoJugador)
+    );
 
     dibujarMapa();
 }
