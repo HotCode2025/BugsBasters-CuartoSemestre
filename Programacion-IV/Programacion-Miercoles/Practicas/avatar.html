@@ -195,15 +195,17 @@
 
     
     <section id="ver-mapa">
-        <h1 class="titulo">Recorre el mapa con tu personaje</h1>
+        <h2 class="titulo">Recorre el mapa con tu personaje</h2>
 
         <p>Usá las flechas del teclado para moverte.</p>
 
         <canvas id="mapa" width="800" height="500"></canvas>
+                
+        <div id="aviso-encuentro" style="display: none;">
+            <p>¡Un enemigo está cerca!</p>
+            <button id="boton-combatir">¡Combatir!</button>
+        </div>
 
-        <button id="boton-continuar-combate">
-            Continuar al combate
-        </button>
     </section>
 
 

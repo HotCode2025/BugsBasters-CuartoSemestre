@@ -124,10 +124,12 @@ const textoVidasJugador = document.getElementById("vidas-jugador");
 const textoVidasEnemigo = document.getElementById("vidas-enemigo");
 const textoResultado = document.getElementById("resultado");
 
+const avisoEncuentro = document.getElementById("aviso-encuentro");
+const botonCombatir = document.getElementById("boton-combatir");
+
 
 const sectionVerMapa = document.getElementById("ver-mapa");
 const mapa = document.getElementById("mapa");
-const botonContinuarCombate = document.getElementById("boton-continuar-combate");
 
 // Contexto para dibujar en dos dimensiones
 const lienzo = mapa.getContext("2d");
@@ -333,6 +335,9 @@ function reiniciarJuego() {
     seccionMensajes.style.display = "none";
     seccionReiniciar.style.display = "none";
     sectionVerMapa.style.display = "none";
+
+    avisoEncuentro.style.display = "none";
+    encuentroActivo = false;
 }
 
 function cargarImagenJugador() {
@@ -521,11 +526,14 @@ function detectarEncuentro() {
     );
 
     if (distancia <= distanciaEncuentro) {
-        encuentroActivo = true;
-        console.log("¡Un enemigo está cerca!");
-    }
+    encuentroActivo = true;
+    avisoEncuentro.style.display = "block";
 }
-
+}
+function iniciarCombateDesdeMapa() {
+    avisoEncuentro.style.display = "none";
+    continuarAlCombate();
+}
 
 
  // EVENTOS
@@ -542,10 +550,7 @@ window.addEventListener("load", () => {
 
     botonReiniciar.addEventListener("click", reiniciarJuego);
 
-    botonContinuarCombate.addEventListener(
-        "click",
-        continuarAlCombate
-    );
+    botonCombatir.addEventListener("click", iniciarCombateDesdeMapa);
     window.addEventListener("keydown", moverJugadorEnMapa);
     window.addEventListener("keyup", detenerMovimiento);
 
