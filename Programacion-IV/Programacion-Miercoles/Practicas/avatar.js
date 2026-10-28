@@ -11,15 +11,38 @@ class Ataque {
     }
 }
 
+
 class Personaje {
-    constructor(id, nombre, foto, elemento) {
+    constructor(id, nombre, foto, elemento, fotoMapa) {
         this.id = id;
         this.nombre = nombre;
         this.foto = foto;
         this.elemento = elemento;
+
+        this.fotoMapa = fotoMapa; // Imagen de cuerpo completo
+
+        // Vidas del personaje
         this.vidasMaximas = 3;
         this.vidas = 3;
+
+        // Ataques del personaje
         this.ataques = [];
+
+        // Posición y tamaño en el mapa
+        this.x = 20;
+        this.y = 30;
+        this.ancho = 80;
+        this.alto = 80;
+
+        // Velocidad de movimiento
+        this.velocidadX = 0;
+        this.velocidadY = 0;
+
+        this.mapaFoto = new Image();
+
+        if (fotoMapa) {
+            this.mapaFoto.src = fotoMapa;
+        }
     }
 
     asignarAtaques(listaAtaques) {
@@ -37,7 +60,7 @@ class Personaje {
     }
 }
 
-// INSTANCIACIÓN DE OBJETOS Y ARRAYS
+// INSTANCIACIÓN DE OBJETOS Y ARRAYS´
 // Creación de ataques estándar
 const ATAQUE_PUNIO = new Ataque("Puño", "✊", "Barrida");
 const ATAQUE_PATADA = new Ataque("Patada", "🦵", "Puño");
@@ -49,18 +72,18 @@ const listaAtaquesGlobales = [ATAQUE_PUNIO, ATAQUE_PATADA, ATAQUE_BARRIDA];
 let avatares = [];
 
 // Instanciamos los personajes individualmente
-let zuko = new Personaje("zuko", "Zuko", "../img/zuko.jpg", "Fuego");
-let katara = new Personaje("katara", "Katara", "../img/katara.jpg", "Agua");
-let aang = new Personaje("aang", "Aang", "../img/aang.jpg", "Aire");
-let toph = new Personaje("toph", "Toph", "../img/toph.jpg", "Tierra");
+let zuko = new Personaje("zuko", "Zuko", "../img/zuko.jpg", "Fuego", "/Programacion-IV/Programacion-Miercoles/Practicas/img/zuko-mapa.webp");
+let katara = new Personaje("katara", "Katara", "../img/katara.jpg", "Agua", "/Programacion-IV/Programacion-Miercoles/Practicas/img/katara-mapa.png");
+let aang = new Personaje("aang", "Aang", "../img/aang.jpg", "Aire", "/Programacion-IV/Programacion-Miercoles/Practicas/img/aang-mapa.webp");
+let toph = new Personaje("toph", "Toph", "../img/toph.jpg", "Tierra", "/Programacion-IV/Programacion-Miercoles/Practicas/img/toph-mapa.png");
 
 // Cargamos los objetos en el array
 avatares.push(zuko, katara, aang, toph);
 
 // Instancias nuevas
-let sokka = new Personaje("sokka", "Sokka", "../img/sokka.jpg", "No Maestro");
-let iroh = new Personaje("iroh", "Iroh", "../img/iroh.jpg", "Fuego");
-let suki = new Personaje("suki", "Suki", "../img/suki.jpg", "Guerrera Kyoshi");
+let sokka = new Personaje("sokka", "Sokka", "../img/sokka.jpg", "No Maestro", "/Programacion-IV/Programacion-Miercoles/Practicas/img/sokka-mapa.png");
+let iroh = new Personaje("iroh", "Iroh", "../img/iroh.jpg", "Fuego", "/Programacion-IV/Programacion-Miercoles/Practicas/img/iroh-mapa.webp");
+let suki = new Personaje("suki", "Suki", "../img/suki.jpg", "Guerrera Kyoshi", "/Programacion-IV/Programacion-Miercoles/Practicas/img/suki-mapa.webp");
 
 // Los empujas al array
 avatares.push(sokka, iroh, suki);
@@ -101,8 +124,64 @@ const textoVidasJugador = document.getElementById("vidas-jugador");
 const textoVidasEnemigo = document.getElementById("vidas-enemigo");
 const textoResultado = document.getElementById("resultado");
 
+
+const sectionVerMapa = document.getElementById("ver-mapa");
+const mapa = document.getElementById("mapa");
+const botonContinuarCombate = document.getElementById("boton-continuar-combate");
+
+// Contexto para dibujar en dos dimensiones
+const lienzo = mapa.getContext("2d");
+const mapaBackground = new Image();
+
+mapaBackground.src =
+    "/Programacion-IV/Programacion-Miercoles/Practicas/img/fotoMapa1.jpg";
+    mapaBackground.onload = () => {
+    dibujarMapa();
+};
+
+mapaBackground.onerror = () => {
+    console.error(
+        "No se pudo cargar el fondo:",
+        mapaBackground.src
+    );
+};
+
+// Datos del personaje que se mueve por el mapa
+let imagenJugadorMapa = new Image();
+
+let posicionJugador = {
+    x: 20,
+    y: 20
+};
+let posicionEnemigo = {
+    x: 0,
+    y: 0,
+    direccion: 1
+};
+
+const velocidadEnemigo = 2;
+
+let encuentroActivo = false;
+const distanciaEncuentro = 100;
+let intervaloMovimiento = null;
+let intervaloMovimientoEnemigo = null;
+let intervaloEncuentro = null;
+
+
+const anchoJugador = 110;
+const altoJugador = 130;
+const velocidadJugador = 4;
+
+let teclasPresionadas = {
+    arriba: false,
+    abajo: false,
+    izquierda: false,
+    derecha: false
+};
+
 // LÓGICA DE NAVEGACIÓN Y JUEGO
 function iniciarJuego() {
+    sectionVerMapa.style.display = "none";
     seccionInicio.style.display = "none";
     seccionReglas.style.display = "none";
     seccionPersonaje.style.display = "block";
@@ -137,24 +216,32 @@ function seleccionarPersonaje() {
 
     // Creamos una instancia independiente para el jugador
     jugador = new Personaje(
-        personajeSeleccionado.id,
-        personajeSeleccionado.nombre,
-        personajeSeleccionado.foto,
-        personajeSeleccionado.elemento
+    personajeSeleccionado.id,
+    personajeSeleccionado.nombre,
+    personajeSeleccionado.foto,
+    personajeSeleccionado.elemento,
+    personajeSeleccionado.fotoMapa
     );
-
+    
     jugador.asignarAtaques(listaAtaquesGlobales);
 
-    // Elegimos un enemigo aleatorio
-    const indiceAleatorio = Math.floor(Math.random() * avatares.length);
-    const personajeEnemigo = avatares[indiceAleatorio];
+    const avataresDisponibles = avatares.filter(
+    personaje => personaje.id !== jugador.id
+);
+
+const indiceAleatorio = Math.floor(
+    Math.random() * avataresDisponibles.length
+);
+
+const personajeEnemigo = avataresDisponibles[indiceAleatorio];
 
     // Creamos una instancia independiente para el enemigo
     enemigo = new Personaje(
-        personajeEnemigo.id,
-        personajeEnemigo.nombre,
-        personajeEnemigo.foto,
-        personajeEnemigo.elemento
+    personajeEnemigo.id,
+    personajeEnemigo.nombre,
+    personajeEnemigo.foto,
+    personajeEnemigo.elemento,
+    personajeEnemigo.fotoMapa
     );
 
     enemigo.asignarAtaques(listaAtaquesGlobales);
@@ -167,6 +254,16 @@ function seleccionarPersonaje() {
 
     // Mostramos la sección de combate
     seccionPersonaje.style.display = "none";
+    seccionAtaque.style.display = "none";
+    seccionMensajes.style.display = "none";
+
+    sectionVerMapa.style.display = "flex";
+
+    cargarImagenJugador();
+}
+
+function continuarAlCombate() {
+    sectionVerMapa.style.display = "none";
     seccionAtaque.style.display = "block";
     seccionMensajes.style.display = "block";
 }
@@ -235,10 +332,205 @@ function reiniciarJuego() {
     seccionAtaque.style.display = "none";
     seccionMensajes.style.display = "none";
     seccionReiniciar.style.display = "none";
+    sectionVerMapa.style.display = "none";
 }
 
-// EVENTOS
-window.addEventListener("load", () => {
+function cargarImagenJugador() {
+    teclasPresionadas.arriba = false;
+    teclasPresionadas.abajo = false;
+    teclasPresionadas.izquierda = false;
+    teclasPresionadas.derecha = false;
+    // Posición inicial: 
+    //jugador
+    posicionJugador.x = (mapa.width - anchoJugador) / 2;
+    posicionJugador.y = mapa.height - altoJugador - 20;
+
+    //enemigo
+    posicionEnemigo.x = mapa.width - anchoJugador - 20;
+    posicionEnemigo.y = 30;
+
+    // Usamos la imagen del personaje que eligió el jugador
+    if (!jugador || !jugador.mapaFoto) {
+        console.error("El personaje seleccionado no tiene imagen de mapa.");
+        return;
+    }
+
+    const imagen = jugador.mapaFoto;
+
+    if (imagen.complete && imagen.naturalWidth > 0) {
+        dibujarMapa();
+    } else {
+        imagen.onload = () => dibujarMapa();
+
+        imagen.onerror = () => {
+            console.error("No se pudo cargar la imagen:", imagen.src);
+        };
+    }
+}
+
+function dibujarMapa() {
+    // Limpiamos el canvas
+    lienzo.clearRect(0, 0, mapa.width, mapa.height);
+
+    // Dibujamos el fondo cuando esté cargado
+    if (
+        mapaBackground.complete &&
+        mapaBackground.naturalWidth > 0
+    ) {
+        lienzo.drawImage(
+            mapaBackground,
+            0,
+            0,
+            mapa.width,
+            mapa.height
+        );
+    }
+
+    // Dibujamos al jugador
+    if (jugador?.mapaFoto?.complete && jugador.mapaFoto.naturalWidth > 0) {
+    lienzo.drawImage(
+        jugador.mapaFoto,
+        posicionJugador.x,
+        posicionJugador.y,
+        anchoJugador,
+        altoJugador
+    );
+}
+
+    // Dibujamos al enemigo
+    if (enemigo && enemigo.mapaFoto.complete && enemigo.mapaFoto.naturalWidth > 0) {
+    lienzo.drawImage(
+        enemigo.mapaFoto,
+        posicionEnemigo.x,
+        posicionEnemigo.y,
+        anchoJugador,
+        altoJugador
+    );
+}
+}
+
+function moverJugadorEnMapa(evento) {
+    if (sectionVerMapa.style.display === "none") {
+        return;
+    }
+
+    switch (evento.key) {
+        case "ArrowUp":
+            teclasPresionadas.arriba = true;
+            evento.preventDefault();
+            break;
+
+        case "ArrowDown":
+            teclasPresionadas.abajo = true;
+            evento.preventDefault();
+            break;
+
+        case "ArrowLeft":
+            teclasPresionadas.izquierda = true;
+            evento.preventDefault();
+            break;
+
+        case "ArrowRight":
+            teclasPresionadas.derecha = true;
+            evento.preventDefault();
+            break;
+    }
+}
+
+function detenerMovimiento(evento) {
+    switch (evento.key) {
+        case "ArrowUp":
+            teclasPresionadas.arriba = false;
+            break;
+
+        case "ArrowDown":
+            teclasPresionadas.abajo = false;
+            break;
+
+        case "ArrowLeft":
+            teclasPresionadas.izquierda = false;
+            break;
+
+        case "ArrowRight":
+            teclasPresionadas.derecha = false;
+            break;
+    }
+}
+function actualizarMovimiento() {
+    if (sectionVerMapa.style.display === "none" || !jugador) return;
+
+    if (teclasPresionadas.arriba) posicionJugador.y -= velocidadJugador;
+    if (teclasPresionadas.abajo) posicionJugador.y += velocidadJugador;
+    if (teclasPresionadas.izquierda) posicionJugador.x -= velocidadJugador;
+    if (teclasPresionadas.derecha) posicionJugador.x += velocidadJugador;
+
+    posicionJugador.x = Math.max(
+        0,
+        Math.min(posicionJugador.x, mapa.width - anchoJugador)
+    );
+
+    posicionJugador.y = Math.max(
+        0,
+        Math.min(posicionJugador.y, mapa.height - altoJugador)
+    );
+
+    dibujarMapa();
+}
+
+function actualizarMovimientoEnemigo() {
+    if (sectionVerMapa.style.display === "none" || !enemigo) return;
+
+    posicionEnemigo.x += velocidadEnemigo * posicionEnemigo.direccion;
+
+    // Cambiar de dirección al llegar a los bordes
+    if (posicionEnemigo.x <= 0) {
+        posicionEnemigo.x = 0;
+        posicionEnemigo.direccion = 1;
+    }
+
+    if (posicionEnemigo.x + anchoJugador >= mapa.width) {
+        posicionEnemigo.x = mapa.width - anchoJugador;
+        posicionEnemigo.direccion = -1;
+    }
+
+    dibujarMapa();
+}
+
+
+function detectarEncuentro() {
+    if (
+        sectionVerMapa.style.display === "none" ||
+        !jugador ||
+        !enemigo ||
+        encuentroActivo
+    ) {
+        return;
+    }
+
+    const centroJugadorX = posicionJugador.x + anchoJugador / 2;
+    const centroJugadorY = posicionJugador.y + altoJugador / 2;
+
+    const centroEnemigoX = posicionEnemigo.x + anchoJugador / 2;
+    const centroEnemigoY = posicionEnemigo.y + altoJugador / 2;
+
+    const distanciaX = centroJugadorX - centroEnemigoX;
+    const distanciaY = centroJugadorY - centroEnemigoY;
+
+    const distancia = Math.sqrt(
+        distanciaX ** 2 + distanciaY ** 2
+    );
+
+    if (distancia <= distanciaEncuentro) {
+        encuentroActivo = true;
+        console.log("¡Un enemigo está cerca!");
+    }
+}
+
+
+
+ // EVENTOS
+window.addEventListener("load", () => {    
+
     botonJugar.addEventListener("click", iniciarJuego);
     botonReglas.addEventListener("click", mostrarReglas);
     botonVolver.addEventListener("click", volverInicio);
@@ -250,13 +542,28 @@ window.addEventListener("load", () => {
 
     botonReiniciar.addEventListener("click", reiniciarJuego);
 
+    botonContinuarCombate.addEventListener(
+        "click",
+        continuarAlCombate
+    );
+    window.addEventListener("keydown", moverJugadorEnMapa);
+    window.addEventListener("keyup", detenerMovimiento);
+
+    // Mostrar únicamente el inicio al cargar
     seccionInicio.style.display = "block";
     seccionReglas.style.display = "none";
     seccionPersonaje.style.display = "none";
     seccionAtaque.style.display = "none";
     seccionMensajes.style.display = "none";
     seccionReiniciar.style.display = "none";
+    sectionVerMapa.style.display = "none";
+
+    intervaloMovimiento = setInterval(actualizarMovimiento, 16);
+    setInterval(actualizarMovimientoEnemigo, 16);
+    setInterval(detectarEncuentro, 100);
+
 });
+
 
 // CONTROL DE VOLUMEN 
 const reproductorMusica = document.getElementById("reproductor-musica");

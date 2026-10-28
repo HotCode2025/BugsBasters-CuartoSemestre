@@ -447,6 +447,29 @@ h1::after {
         0 7px 15px rgba(0, 0, 0, 0.5);
 }
 
+#ver-mapa {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+#mapa {
+    border: 2px solid white;
+    background-color: #d7e8d0;
+    max-width: 100%;
+    height: auto;
+}
+
+#boton-continuar-combate {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
 
 /* ==========================================
    MENSAJES
@@ -530,6 +553,7 @@ h1::after {
         padding: 14px 20px;
     }
 }
+
 
 @media (max-width: 450px) {
 
