@@ -20,6 +20,7 @@ Thumbs.db
 # Java / Maven
 target/
 *.class
+**/application.properties
 
 # Node
 node_modules/
