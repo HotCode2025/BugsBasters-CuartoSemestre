@@ -447,6 +447,83 @@ h1::after {
         0 7px 15px rgba(0, 0, 0, 0.5);
 }
 
+#ver-mapa {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+#mapa {
+    border: 2px solid white;
+    background-color: #d7e8d0;
+    max-width: 100%;
+    height: auto;
+}
+
+#boton-continuar-combate {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#aviso-encuentro {
+    text-align: center;
+    margin: 15px auto;
+    padding: 20px;
+    width: fit-content;
+    background: rgba(138, 135, 112, 0.95);
+    border: 2px solid #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(101, 104, 78, 0.4);
+    animation: aparecerAviso 0.4s ease-out;
+}
+
+#aviso-encuentro p {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 0 15px;
+}
+
+#boton-combatir {
+    padding: 14px 32px;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #d6d1c2, #726f65);
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(85, 81, 74, 0.6);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#boton-combatir:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(48, 47, 44, 0.9);
+}
+
+#boton-combatir:active {
+    transform: scale(0.96);
+}
+
+@keyframes aparecerAviso {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 
 /* ==========================================
    MENSAJES
@@ -530,6 +607,7 @@ h1::after {
         padding: 14px 20px;
     }
 }
+
 
 @media (max-width: 450px) {
 

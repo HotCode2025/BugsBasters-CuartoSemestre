@@ -6,6 +6,6 @@ INSERT INTO	estudiantes_2026(nombre, apellido, telefono, mail) values ( "Juan", 
 -- update (modifcar /actualizar)
 UPDATE estudiantes_2026 SET nombre="Juan Carlos", apellido= "Garcia" WHERE idestudiantes_2026=1;
 -- delete (eliminar)
-DELETE FROM estudiantes_2026 where idestudiantes_2026=7;
+DELETE FROM estudiantes_2026 where idestudiantes_2026=9;
 -- Para modificar el idestudiantes_2026 y cominece en 1 (no recomendable ni es buena practica)
 ALTER TABLE estudiantes_2026 AUTO_INCREMENT = 1;
