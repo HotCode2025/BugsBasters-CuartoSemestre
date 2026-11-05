@@ -1,0 +1,15 @@
+# Entornos virtuales
+.venv/
+env/
+web-server/env/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Variables de entorno
+.env
+.env.*
+
+# Configuración local
+.vscode/
