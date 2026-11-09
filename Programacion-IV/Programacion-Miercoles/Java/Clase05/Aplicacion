@@ -1,0 +1,106 @@
+package utn.estudiantes;
+
+import java.util.List;
+import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import utn.estudiantes.modelo.Estudiantes2022;
+import utn.estudiantes.servicio.EstudianteServicio;
+
+@SpringBootApplication
+public class EstudiantesApplication implements CommandLineRunner {
+
+    @Autowired
+    private EstudianteServicio estudianteServicio;
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(EstudiantesApplication.class);
+
+    String nl = System.lineSeparator();
+
+    public static void main(String[] args) {
+        logger.info("Iniciando la aplicación...");
+
+        // Levantar la fábrica de Spring
+        SpringApplication.run(EstudiantesApplication.class, args);
+
+        logger.info("Aplicación Finalizada!");
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        logger.info(nl + "Ejecutando el método run de Spring..." + nl);
+
+        var salir = false;
+        var consola = new Scanner(System.in);
+
+        while (!salir) {
+            mostrarMenu();
+            salir = ejecutarOpciones(consola);
+            logger.info(nl);
+        }
+    }
+
+    private void mostrarMenu() {
+        logger.info(nl);
+        logger.info("""
+                ******* Sistema de Estudiantes *******
+                1. Listar Estudiantes
+                2. Buscar Estudiante
+                3. Agregar Estudiante
+                4. Modificar Estudiante
+                5. Eliminar Estudiante
+                6. Salir
+                Elija una opción:""");
+    }
+
+    private boolean ejecutarOpciones(Scanner consola) {
+        if (!consola.hasNextLine()) {
+            return true;
+        }
+
+        int opcion;
+
+        try {
+            opcion = Integer.parseInt(consola.nextLine().trim());
+        } catch (NumberFormatException e) {
+            logger.info("Ingresá un número entero del 1 al 6.");
+            return false;
+        }
+
+        var salir = false;
+
+        switch (opcion) {
+            case 1 -> {
+                logger.info(nl + "Listado de estudiantes:" + nl);
+
+                List<Estudiantes2022> estudiantes =
+                        estudianteServicio.listarEstudiantes();
+
+                if (estudiantes.isEmpty()) {
+                    logger.info("Todavía no hay estudiantes registrados.");
+                }
+
+                estudiantes.forEach(estudiante ->
+                        logger.info(estudiante.toString() + nl));
+            }
+
+            case 2, 3, 4, 5 ->
+                    logger.info("Esta opción está pendiente de implementación.");
+
+            case 6 -> {
+                logger.info("Saliendo del Sistema de Estudiantes...");
+                salir = true;
+            }
+
+            default -> logger.info("Elegí una opción entre 1 y 6.");
+        }
+
+        return salir;
+    }
