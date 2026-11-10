@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agenda de visitas · Bodega del Sur</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="wrap brand">
+            <span class="monogram" aria-hidden="true">B</span>
+            Bodega del Sur
+        </div>
+    </header>
+
+    <main class="wrap">
+        <h1>Agenda de <em>visitas</em></h1>
+
+        <div class="layout">
+            <section class="form-panel" aria-labelledby="alta">
+                <h2 id="alta">Nueva reserva</h2>
+
+                <form id="reserva">
+                    <label>
+                        Nombre del visitante
+                        <input name="visitante" autocomplete="name"
+                               maxlength="100" required>
+                    </label>
+
+                    <label>
+                        Experiencia
+                        <select name="experiencia" required>
+                            <option value="VISITA_GUIADA">Visita guiada</option>
+                            <option value="DEGUSTACION">Degustación de vinos</option>
+                            <option value="RECORRIDO_VINEDO">Recorrido por el viñedo</option>
+                        </select>
+                    </label>
+
+                    <div class="pair">
+                        <label>
+                            Fecha
+                            <input type="date" name="fecha" required>
+                        </label>
+
+                        <label>
+                            Hora
+                            <input type="time" name="hora" required>
+                        </label>
+                    </div>
+
+                    <label>
+                        Cantidad de personas
+                        <input type="number" name="personas" min="1"
+                               max="2147483647" step="1" value="2" required>
+                    </label>
+
+                    <button class="primary" type="submit">Guardar reserva</button>
+                </form>
+            </section>
+
+            <section class="agenda" aria-labelledby="listado">
+                <div class="section-head">
+                    <h2 id="listado">Reservas</h2>
+                    <button type="button" id="recargar">Actualizar</button>
+                </div>
+
+                <p id="estado" role="status"></p>
+                <ol id="visitas"></ol>
+            </section>
+        </div>
+    </main>
+
+    <template id="fila">
+        <li>
+            <div class="momento">
+                <strong class="hora"></strong>
+                <span class="fecha"></span>
+            </div>
+
+            <div class="detalle">
+                <div class="ficha">
+                    <h3></h3>
+                    <span class="estado-visita"></span>
+                </div>
+
+                <p class="experiencia"></p>
+
+                <div class="acciones">
+                    <button type="button" class="asistencia"></button>
+                    <button type="button" class="eliminar">Eliminar</button>
+                </div>
+            </div>
+        </li>
+    </template>
+</body>
+</html>
