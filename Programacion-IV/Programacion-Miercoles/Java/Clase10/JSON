@@ -1,0 +1,75 @@
+{
+  "info": {
+    "name": "Agenda de visitas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:8080/api/v1/reservas"
+    },
+    {
+      "key": "id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Crear reserva",
+      "request": {
+        "method": "POST",
+        "url": "{{base}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"visitante\": \"Ana Pérez\",\n  \"experiencia\": \"DEGUSTACION\",\n  \"personas\": 2,\n  \"fecha\": \"2026-11-21\",\n  \"hora\": \"16:00\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Reserva creada\", () => pm.response.to.have.status(201));",
+              "if (pm.response.code === 201) pm.collectionVariables.set(\"id\", pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar reservas",
+      "request": {
+        "method": "GET",
+        "url": "{{base}}"
+      }
+    },
+    {
+      "name": "Registrar asistencia",
+      "request": {
+        "method": "PATCH",
+        "url": "{{base}}/{{id}}/asistencia?asistio=true"
+      }
+    },
+    {
+      "name": "Deshacer asistencia",
+      "request": {
+        "method": "PATCH",
+        "url": "{{base}}/{{id}}/asistencia?asistio=false"
+      }
+    },
+    {
+      "name": "Eliminar reserva",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base}}/{{id}}"
+      }
+    }
+  ]
+}
