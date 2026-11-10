@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/db_agenda_bodega?createDatabaseIfNotExist=true"
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
