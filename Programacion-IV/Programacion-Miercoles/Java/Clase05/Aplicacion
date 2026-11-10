@@ -1,6 +1,7 @@
 package utn.estudiantes;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -22,34 +23,33 @@ public class EstudiantesApplication implements CommandLineRunner {
     private static final Logger logger =
             LoggerFactory.getLogger(EstudiantesApplication.class);
 
-    String nl = System.lineSeparator();
+    private static final String nl = System.lineSeparator();
 
     public static void main(String[] args) {
         logger.info("Iniciando la aplicación...");
-
-        // Levantar la fábrica de Spring
         SpringApplication.run(EstudiantesApplication.class, args);
-
-        logger.info("Aplicación Finalizada!");
+        logger.info("¡Aplicación finalizada!");
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         logger.info(nl + "Ejecutando el método run de Spring..." + nl);
 
-        var salir = false;
-        var consola = new Scanner(System.in);
+        try (Scanner consola = new Scanner(System.in)) {
+            boolean salir = false;
 
-        while (!salir) {
-            mostrarMenu();
-            salir = ejecutarOpciones(consola);
-            logger.info(nl);
+            while (!salir) {
+                mostrarMenu();
+                salir = ejecutarOpciones(consola);
+            }
+        } catch (NoSuchElementException finDeEntrada) {
+            logger.info("Se cerró la entrada de consola.");
         }
     }
 
     private void mostrarMenu() {
-        logger.info(nl);
         logger.info("""
+                
                 ******* Sistema de Estudiantes *******
                 1. Listar Estudiantes
                 2. Buscar Estudiante
@@ -61,24 +61,13 @@ public class EstudiantesApplication implements CommandLineRunner {
     }
 
     private boolean ejecutarOpciones(Scanner consola) {
-        if (!consola.hasNextLine()) {
-            return true;
-        }
-
-        int opcion;
-
-        try {
-            opcion = Integer.parseInt(consola.nextLine().trim());
-        } catch (NumberFormatException e) {
-            logger.info("Ingresá un número entero del 1 al 6.");
-            return false;
-        }
-
-        var salir = false;
+        int opcion = leerEntero(consola);
+        boolean salir = false;
 
         switch (opcion) {
+            // Parte 1 -> listarEstudiantes
             case 1 -> {
-                logger.info(nl + "Listado de estudiantes:" + nl);
+                logger.info("Listado de estudiantes:");
 
                 List<Estudiantes2022> estudiantes =
                         estudianteServicio.listarEstudiantes();
@@ -87,20 +76,108 @@ public class EstudiantesApplication implements CommandLineRunner {
                     logger.info("Todavía no hay estudiantes registrados.");
                 }
 
-                estudiantes.forEach(estudiante ->
-                        logger.info(estudiante.toString() + nl));
+                estudiantes.forEach(estudiante -> logger.info("{}", estudiante));
             }
 
-            case 2, 3, 4, 5 ->
-                    logger.info("Esta opción está pendiente de implementación.");
+            // Parte 2 -> buscarEstudiantePorId y agregarEstudiante
+            case 2 -> {
+                logger.info("Ingrese el ID del estudiante que desea buscar:");
+                int idEstudiante = leerEntero(consola);
+
+                Estudiantes2022 estudiante =
+                        estudianteServicio.buscarEstudiantePorId(idEstudiante);
+
+                if (estudiante != null) {
+                    logger.info("Estudiante encontrado: {}", estudiante);
+                } else {
+                    logger.info("Estudiante no encontrado con el ID: {}", idEstudiante);
+                }
+            }
+
+            case 3 -> {
+                logger.info("Agregar estudiante");
+
+                var estudiante = new Estudiantes2022();
+                cargarDatos(consola, estudiante);
+                estudianteServicio.guardarEstudiante(estudiante);
+
+                logger.info("Estudiante agregado: {}", estudiante);
+            }
+
+            // Parte 3 -> modificarEstudiante
+            case 4 -> {
+                logger.info("Modificar estudiante");
+                logger.info("Ingrese el ID del estudiante que desea modificar:");
+                int idEstudiante = leerEntero(consola);
+
+                Estudiantes2022 estudiante =
+                        estudianteServicio.buscarEstudiantePorId(idEstudiante);
+
+                if (estudiante != null) {
+                    cargarDatos(consola, estudiante);
+                    estudianteServicio.guardarEstudiante(estudiante);
+                    logger.info("Estudiante modificado: {}", estudiante);
+                } else {
+                    logger.info("Estudiante no encontrado con el ID: {}", idEstudiante);
+                }
+            }
+
+            // Parte 4 -> eliminarEstudiante y salir
+            case 5 -> {
+                logger.info("Eliminar estudiante");
+                logger.info("Ingrese el ID del estudiante que desea eliminar:");
+                int idEstudiante = leerEntero(consola);
+
+                Estudiantes2022 estudiante =
+                        estudianteServicio.buscarEstudiantePorId(idEstudiante);
+
+                if (estudiante != null) {
+                    estudianteServicio.eliminarEstudiante(estudiante);
+                    logger.info("Estudiante eliminado: {}", estudiante);
+                } else {
+                    logger.info("Estudiante no encontrado con el ID: {}", idEstudiante);
+                }
+            }
 
             case 6 -> {
-                logger.info("Saliendo del Sistema de Estudiantes...");
+                logger.info("¡Hasta pronto!");
                 salir = true;
             }
 
-            default -> logger.info("Elegí una opción entre 1 y 6.");
+            default -> logger.info("Opción no reconocida: {}", opcion);
         }
 
         return salir;
     }
+
+    private void cargarDatos(Scanner consola, Estudiantes2022 estudiante) {
+        logger.info("Nombre:");
+        String nombre = consola.nextLine();
+
+        logger.info("Apellido:");
+        String apellido = consola.nextLine();
+
+        logger.info("Teléfono:");
+        String telefono = consola.nextLine();
+
+        logger.info("Email:");
+        String email = consola.nextLine();
+
+        estudiante.setNombre(nombre);
+        estudiante.setApellido(apellido);
+        estudiante.setTelefono(telefono);
+        estudiante.setEmail(email);
+    }
+
+    private int leerEntero(Scanner consola) {
+        while (true) {
+            String entrada = consola.nextLine().trim();
+
+            try {
+                return Integer.parseInt(entrada);
+            } catch (NumberFormatException e) {
+                logger.info("Ingresá un número entero y volvé a intentar:");
+            }
+        }
+    }
+}
