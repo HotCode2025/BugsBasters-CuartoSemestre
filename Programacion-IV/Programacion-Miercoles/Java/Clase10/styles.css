@@ -1,0 +1,174 @@
+:root {
+    --papel: #f7f4ec;
+    --tinta: #272a24;
+    --vino: #70283f;
+    --linea: #cfc9bc;
+    font: 16px/1.45 "DM Sans", Arial, sans-serif;
+    color: var(--tinta);
+    background: var(--papel);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+
+.wrap {
+    width: min(1120px, 92%);
+    margin-inline: auto;
+}
+
+header {
+    background: #26382e;
+    color: #fffaf0;
+}
+
+.brand {
+    display: flex;
+    gap: .8rem;
+    align-items: center;
+    min-height: 72px;
+    font: 1.55rem Georgia, serif;
+}
+
+.monogram {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 39px;
+    border: 1px solid #adae98;
+    border-radius: 45% 45% 5px 5px;
+    font-style: italic;
+}
+
+main { padding-bottom: 4rem; }
+
+h1, h2, h3 {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-weight: 400;
+}
+
+h1 {
+    font-size: clamp(3rem, 7vw, 6.3rem);
+    letter-spacing: -.06em;
+    line-height: 1.1;
+    margin: .65em 0 .45em;
+}
+
+h1 em { color: var(--vino); }
+
+h2 {
+    font-size: 2rem;
+    letter-spacing: -.04em;
+    margin: 0;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(250px, .8fr) minmax(300px, 1.55fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+}
+
+.form-panel {
+    border: 1px solid var(--linea);
+    border-top: 3px solid var(--vino);
+    background: #fffcf6;
+    padding: clamp(1rem, 2.5vw, 2rem);
+}
+
+form, label { display: grid; }
+form { gap: 1rem; margin-top: 1.4rem; }
+label { gap: .35rem; font-size: .9rem; font-weight: 600; }
+input, select, button { font: inherit; }
+
+input, select {
+    min-width: 0;
+    width: 100%;
+    border: 1px solid #b6b3a9;
+    padding: .66rem;
+    border-radius: .3rem;
+    color: var(--tinta);
+    background: #fff;
+}
+
+.pair {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: .6rem;
+}
+
+button {
+    cursor: pointer;
+    background: transparent;
+    color: var(--tinta);
+    border: 1px solid var(--linea);
+    border-radius: .35rem;
+    padding: .45rem .8rem;
+}
+
+button:hover { border-color: var(--vino); }
+button:disabled { opacity: .6; cursor: wait; }
+:focus-visible { outline: 3px solid #9c6f25; outline-offset: 2px; }
+
+.primary {
+    background: var(--vino);
+    border-color: var(--vino);
+    color: #fff;
+    padding: .8rem;
+    font-weight: 650;
+}
+
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #344636;
+    padding-bottom: .9rem;
+}
+
+#estado { font-size: .95rem; color: #55574d; }
+#visitas { list-style: none; padding: 0; margin: 0; }
+
+li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--linea);
+}
+
+.momento {
+    flex: 0 0 5.5rem;
+    display: grid;
+    border-right: 1px solid var(--linea);
+    color: var(--vino);
+}
+
+.hora { font: 1.65rem Georgia, serif; }
+.fecha { font-size: .78rem; }
+.detalle { flex: 1; min-width: 0; }
+
+.ficha, .acciones {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    flex-wrap: wrap;
+}
+
+h3 { font-size: 1.45rem; margin: 0; overflow-wrap: anywhere; }
+
+.estado-visita {
+    padding: .14rem .55rem;
+    border-radius: 1rem;
+    font-size: .75rem;
+    background: #ebe4d7;
+}
+
+.presente .estado-visita { color: #234d38; background: #deeadc; }
+.experiencia { margin: .25rem 0 .8rem; }
+.acciones button { font-size: .85rem; }
+.eliminar { color: var(--vino); }
+
+@media (max-width: 740px) {
+    .layout { grid-template-columns: 1fr; }
+    .momento { flex-basis: 5rem; }
+}
