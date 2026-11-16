@@ -1,0 +1,35 @@
+{
+  "name": "clase-08-a---proyecto-con-stack-pern-por-daniel-guerrero---parte-5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie": "^2.0.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "md5": "^2.3.0",
+    "morgan": "^1.12.1",
+    "parser": "^0.1.4",
+    "pg": "^8.23.1",
+    "react-router-dom": "^7.18.5",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "eslint": "^10.10.0",
+    "nodemon": "^3.1.14"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true
+  }
+}

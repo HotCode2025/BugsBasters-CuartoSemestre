@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activar Bomba</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Escena 3D isométrica -->
+    <div class="scene">
+        <!-- Plataforma con franjas de peligro -->
+        <div class="base">
+            <div class="stripes"></div>
+            <div class="edge edge-front"></div>
+            <div class="edge edge-right"></div>
+        </div>
+
+        <!-- Carteles -->
+        <div class="label label-left">WARNING: DANGER</div>
+        <div class="label label-right">BugsBasters</div>
+
+        <!-- Botón rojo (cilindro hecho con discos apilados) -->
+        <div id="activate">
+            <div class="ring">
+                <span style="--z:0"></span><span style="--z:1"></span><span style="--z:2"></span>
+                <span style="--z:3"></span><span style="--z:4"></span><span style="--z:5"></span>
+            </div>
+            <div class="cap">
+                <span style="--z:6"></span><span style="--z:7"></span><span style="--z:8"></span>
+                <span style="--z:9"></span><span style="--z:10"></span><span style="--z:11"></span>
+                <span style="--z:12" class="top"></span>
+            </div>
+        </div>
+
+        <!-- Cubierta de cristal -->
+        <div class="box opened" id="cover">
+            <div class="face top"></div>
+            <div class="face side-front"></div>
+            <div class="face side-back"></div>
+            <div class="face side-left"></div>
+            <div class="face side-right"></div>
+        </div>
+    </div>
+
+    <!-- Panel de cuenta regresiva -->
+    <div id="panel">
+        <div class="panel-box">
+            <div class="title">WARNING</div>
+            <div id="msg">DEVICE SELF-DESTRUCTION</div>
+            <div id="time">00:09</div>
+            <span id="abort">ABORT</span>
+            <span id="detonate">DETONATE</span>
+        </div>
+    </div>
+
+    <!-- Explosión -->
+    <div id="explosion">
+        <div class="flash"></div>
+        <div class="smoke"></div>
+        <div class="fireball"></div>
+        <div class="shockwave"></div>
+    </div>
+    <div id="closing"></div>
+
+    <div id="restart"><button id="reload"></button></div>
+
+    <div id="mute"></div>
+
+    <!-- Audios (Deben estar en la carpeta /sound) -->
+    <audio id="alarm" src="./sound/alarma.mp3"></audio>
+    <audio id="alarm2" src="./sound/explosion.wav"></audio>
+
+    <script src="./prueba.js"></script>
+</body>
+</html>
